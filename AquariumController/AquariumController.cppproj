@@ -300,6 +300,14 @@
       <SubType>compile</SubType>
       <Link>ArduinoLibs\Wire\Wire.h</Link>
     </Compile>
+    <Compile Include="..\..\..\program files %28x86%29\arduino\libraries\LiquidCrystal\src\LiquidCrystal.cpp">
+      <SubType>compile</SubType>
+      <Link>arduinolibs\LiquidCrystal\LiquidCrystal.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\..\program files %28x86%29\arduino\libraries\LiquidCrystal\src\LiquidCrystal.h">
+      <SubType>compile</SubType>
+      <Link>arduinolibs\LiquidCrystal\LiquidCrystal.h</Link>
+    </Compile>
     <Compile Include="..\..\..\program files %28x86%29\arduino\libraries\servo\src\avr\Servo.cpp">
       <SubType>compile</SubType>
       <Link>arduinolibs\Servo\Servo.cpp</Link>
@@ -423,6 +431,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ArduinoLibs\DS3232RTC" />
+    <Folder Include="ArduinoLibs\LiquidCrystal" />
     <Folder Include="ArduinoLibs\Servo" />
     <Folder Include="ArduinoLibs\Wire" />
     <Folder Include="ArduinoLibs\Time" />
