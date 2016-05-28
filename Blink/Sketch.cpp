@@ -1,6 +1,6 @@
 ﻿/*Begining of Auto generated code by Atmel studio */
 #include <Arduino.h>
-#include <pnew.cpp>
+#include <StandardCplusplus.h>
 
 #include <vector>
 using namespace std;
