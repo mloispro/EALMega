@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <StandardCplusplus.h>
 #include <vector>
+#include <string>
 using namespace std;
 
 #include <Servo.h>
@@ -21,11 +22,11 @@ using namespace std;
 #include "FishFeeder.h"
 #include "ServoMotor.h"
 //#include <LCDMenu.h>
-#include "LCDMenuController.h"
+#include "LCDDisplay.h"
 
 using namespace Globals;
 using namespace Utils;
-using namespace Controllers;
+using namespace LCD;
 
 ControllerType _controllerType(true, false, true);
 
@@ -55,14 +56,7 @@ SimpleTimer _selectPressTimer;
 SimpleTimer _doserTimer;
 
 //LiquidCrystal _lcd(8, 9, 4, 5, 6, 7);
-//Controllers::LCDMenuController _lcdMenuController;
-
-#include "DumbFucker.h"
-#include "DumbFuckerController.h"
-using namespace DumbAss;
-//LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-//DumbFucker _dumbFucker(5);
-DumbFuckerController _dumbFuckerController;
+LCDDisplay _lcdDisplay;
 
 
 void IsSelectPressed();
@@ -72,7 +66,7 @@ void RunDoser();
 // the setup function runs once when you press reset or power the board
 void setup() {
     //_dumbFucker.Begin();
-    _dumbFuckerController.Init();
+    //_dumbFuckerController.Init();
     //_lcdMenuController.Init();
 
     Serial.begin(115200);
@@ -80,7 +74,7 @@ void setup() {
 
     //RTCExt::Init();
 
-    //_lcdMenuController.Init();
+    _lcdDisplay.Init();
     ////_lcdMenuController = LCDMenuController();
     //
     ////Serial.println(F("a"));
@@ -92,15 +86,15 @@ void setup() {
     FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2);
     feeder2.RunEverySeconds = 30;
     _feeders.push_back(feeder2);
-    //
-    //_selectPressTimer.setInterval(500, IsSelectPressed);
-    //
-    //_doserTimer.setInterval(4000, RunDoser);
 
-    //SerialExt::Debug(RTCExt::IsRTCTimeSet());
-    //RTCExt::SetRTCTime(9, 42, 0, 8, 4, 2016);
-    //if (!RTCExt::IsRTCTimeSet())
-    //	_lcdMenuController.SelectMainMenu();
+    _selectPressTimer.setInterval(500, IsSelectPressed);
+
+    _doserTimer.setInterval(4000, RunDoser);
+
+    SerialExt::Debug(RTCExt::IsRTCTimeSet());
+    RTCExt::SetRTCTime(9, 42, 0, 8, 4, 2016);
+    if(!RTCExt::IsRTCTimeSet())
+        _lcdDisplay.SelectMainMenu();
 }
 // the loop function runs over and over again forever
 void loop() {
@@ -109,16 +103,16 @@ void loop() {
 }
 void IsSelectPressed() {
 
-    int key = _dumbFuckerController.GetKey();
-    SerialExt::Debug("key_isp", key);
-
-    if(key == 4) {
-        _timersEnabled = false; //disable
-        _dumbFuckerController.SelectMainMenu();
-        _timersEnabled = true; //enable
-    }
-
-    _dumbFuckerController.Scroll();
+    //int key = _lcdDisplay.GetKey();
+    //SerialExt::Debug("key_isp", key);
+    //
+    //if(key == 4) {
+    //_timersEnabled = false; //disable
+    //_lcdDisplay.SelectMainMenu();
+    //_timersEnabled = true; //enable
+    //}
+    //
+    //_lcdDisplay.Scroll();
 
 }
 
