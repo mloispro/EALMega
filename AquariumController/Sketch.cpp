@@ -1,4 +1,4 @@
-﻿
+﻿//alert: remember to use str.c_str() when returning Strings from functions
 #include <Arduino.h>
 #include <StandardCplusplus.h>
 #include <vector>
@@ -65,19 +65,13 @@ void RunDoser();
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-    //_dumbFucker.Begin();
-    //_dumbFuckerController.Init();
-    //_lcdMenuController.Init();
 
     Serial.begin(115200);
     while(!Serial);
 
     //RTCExt::Init();
-
     _lcdDisplay.Init();
-    ////_lcdMenuController = LCDMenuController();
-    //
-    ////Serial.println(F("a"));
+
     _doser = RODoser(_servo, _doserPin, 2, 22000, _floatSwitch);
 
     FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2);
@@ -103,86 +97,86 @@ void loop() {
 }
 void IsSelectPressed() {
 
-    //int key = _lcdDisplay.GetKey();
-    //SerialExt::Debug("key_isp", key);
-    //
-    //if(key == 4) {
-    //_timersEnabled = false; //disable
-    //_lcdDisplay.SelectMainMenu();
-    //_timersEnabled = true; //enable
-    //}
-    //
-    //_lcdDisplay.Scroll();
+    int key = _lcdDisplay.GetKey();
+    SerialExt::Debug("key_isp", key);
+
+    if(key == 4) {
+        _timersEnabled = false; //disable
+        _lcdDisplay.SelectMainMenu();
+        _timersEnabled = true; //enable
+    }
+
+    _lcdDisplay.Scroll();
 
 }
 
 void FeedFish() {
-    ////_rtcController.SetLastRun(AccessoryType::Feeder);
-    //
-    //int incomingNum = SerialExt::Read();
-    //if(incomingNum > 0) {
-    //bool processed = _doser.ProcessSerialInput(incomingNum);
-    //}
-    //
-    ////1 to run, 2 to run demo
-    //bool runMotor = ServoMotor::ShouldRunMotorBySerialInput(incomingNum);
-    //bool runMotorDemo = ServoMotor::ShouldRunMotorDemo(incomingNum);
-    //
-    //if(!runMotor && !runMotorDemo) {
-    //FishFeeder feeder = _feeders[0];
-    //runMotor = feeder.ShouldRunMotor(true);
-    //SerialExt::Debug("feeder_runMotor: ", runMotor);
-    //}
-    //
-    //if(runMotor) {
-    ////SerialExt::Print("Signaling Relay ON, pin: ", _feederPwrSigPin);
-    ////digitalWrite(_feederPwrSigPin, LOW); //to send relay signal
-    ////int potVal = analogRead(_potShakesPin); // reads the value of the potentiometer (value between 0 and 1023)
-    ////SerialExt::Print("Pot Val: ", potVal);
-    //FishFeeder::FeedAll(_feeders);
-    ////SerialExt::Print("Signaling Relay OFF, pin: ", _feederPwrSigPin);
-    ////digitalWrite(_feederPwrSigPin, HIGH);
-    //} else if(runMotorDemo) {
-    //FishFeeder::RunDemo(_feeders);
-    //}
-    ////_secondFeeding = _secondFeeding * 3600000;
-    ////SerialExt::Print("Second Feeding in (Hours): ", _secondFeeding / 3600000);
-    ////delay(_secondFeeding);//delay 9 hours before next feed.
-    ////delay(10000); //for testing
+    //_rtcController.SetLastRun(AccessoryType::Feeder);
+
+    int incomingNum = SerialExt::Read();
+    if(incomingNum > 0) {
+        bool processed = _doser.ProcessSerialInput(incomingNum);
+    }
+
+    //1 to run, 2 to run demo
+    bool runMotor = ServoMotor::ShouldRunMotorBySerialInput(incomingNum);
+    bool runMotorDemo = ServoMotor::ShouldRunMotorDemo(incomingNum);
+
+    if(!runMotor && !runMotorDemo) {
+        FishFeeder feeder = _feeders[0];
+        runMotor = feeder.ShouldRunMotor(true);
+        SerialExt::Debug("feeder_runMotor: ", runMotor);
+    }
+
+    if(runMotor) {
+        //SerialExt::Print("Signaling Relay ON, pin: ", _feederPwrSigPin);
+        //digitalWrite(_feederPwrSigPin, LOW); //to send relay signal
+        //int potVal = analogRead(_potShakesPin); // reads the value of the potentiometer (value between 0 and 1023)
+        //SerialExt::Print("Pot Val: ", potVal);
+        FishFeeder::FeedAll(_feeders);
+        //SerialExt::Print("Signaling Relay OFF, pin: ", _feederPwrSigPin);
+        //digitalWrite(_feederPwrSigPin, HIGH);
+    } else if(runMotorDemo) {
+        FishFeeder::RunDemo(_feeders);
+    }
+    //_secondFeeding = _secondFeeding * 3600000;
+    //SerialExt::Print("Second Feeding in (Hours): ", _secondFeeding / 3600000);
+    //delay(_secondFeeding);//delay 9 hours before next feed.
+    //delay(10000); //for testing
 
 }
 
 void RunDoser() {
-    ////SerialExt::Debug("_runEverySeconds ",_runEverySeconds);
-    //
-    //int incomingNum = SerialExt::Read();
-    //if(incomingNum > 0) {
-    //bool processed = _doser.ProcessSerialInput(incomingNum);
-    //}
-    //
-    ////1 to run, 2 to run demo
-    //bool runMotor = ServoMotor::ShouldRunMotorBySerialInput(incomingNum);
-    //bool runMotorDemo = ServoMotor::ShouldRunMotorDemo(incomingNum);
-    //
-    //if(!runMotor && !runMotorDemo) {
-    //runMotor = _doser.ShouldRunMotor(true);
-    //SerialExt::Debug("doser_runMotor: ", runMotor);
-    //}
-    //
-    //if(runMotor) {
-    //
-    ////int shakesOrTurns = menuController.GetShakesOrTurns(accType);
-    ////_doser.Shakes = shakesOrTurns;
-    //
-    //SerialExt::Debug("switchIsOn: ", _doser.TheSwitch.IsOn());
-    //SerialExt::Debug("switchVal: ", _doser.TheSwitch.SwitchReading);
-    //_doser.Dose();
-    //} else if(runMotorDemo) {
-    //vector<RODoser> dosers;
-    //dosers.push_back(_doser);
-    //RODoser::RunDemo(dosers);
-    //}
-    //FeedFish();
+    //SerialExt::Debug("_runEverySeconds ",_runEverySeconds);
+
+    int incomingNum = SerialExt::Read();
+    if(incomingNum > 0) {
+        bool processed = _doser.ProcessSerialInput(incomingNum);
+    }
+
+    //1 to run, 2 to run demo
+    bool runMotor = ServoMotor::ShouldRunMotorBySerialInput(incomingNum);
+    bool runMotorDemo = ServoMotor::ShouldRunMotorDemo(incomingNum);
+
+    if(!runMotor && !runMotorDemo) {
+        runMotor = _doser.ShouldRunMotor(true);
+        SerialExt::Debug("doser_runMotor: ", runMotor);
+    }
+
+    if(runMotor) {
+
+        //int shakesOrTurns = menuController.GetShakesOrTurns(accType);
+        //_doser.Shakes = shakesOrTurns;
+
+        SerialExt::Debug("switchIsOn: ", _doser.TheSwitch.IsOn());
+        SerialExt::Debug("switchVal: ", _doser.TheSwitch.SwitchReading);
+        _doser.Dose();
+    } else if(runMotorDemo) {
+        vector<RODoser> dosers;
+        dosers.push_back(_doser);
+        RODoser::RunDemo(dosers);
+    }
+    FeedFish();
 }
 
 
