@@ -7,13 +7,9 @@ using namespace std;
 
 #include <Servo.h>
 #include <LiquidCrystal.h>
-//#include <_SimulateDebug.h>
-
 #include <SimpleTimer.h> //events
 
-
-//#include <string>
-
+//#include <_SimulateDebug.h>
 #include "_globals.h"
 #include "SerialExt.h"
 #include "RTCExt.h"
@@ -50,14 +46,13 @@ int _feederPin4 = 33;
 
 #pragma endregion FEEDER
 
-bool _timersEnabled = true;
-
-SimpleTimer _selectPressTimer;
-SimpleTimer _doserTimer;
-
 //LiquidCrystal _lcd(8, 9, 4, 5, 6, 7);
 LCDDisplay _lcdDisplay;
 
+bool _timersEnabled = true;
+SimpleTimer _selectPressTimer;
+SimpleTimer _doserTimer;
+SimpleTimer _feederTimer;
 
 void IsSelectPressed();
 void FeedFish();
@@ -72,27 +67,37 @@ void setup() {
     //RTCExt::Init();
     _lcdDisplay.Init();
 
-    _doser = RODoser(_servo, _doserPin, 2, 22000, _floatSwitch);
-
-    FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2);
-    feeder1.RunEverySeconds = 30;
-    _feeders.push_back(feeder1);
-    FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2);
-    feeder2.RunEverySeconds = 30;
-    _feeders.push_back(feeder2);
+    if(_controllerType.Doser) {
+        _doser = RODoser(_servo, _doserPin, 2, 22000, _floatSwitch);
+        _doserTimer.setInterval(4000, RunDoser);
+    }
+    if(_controllerType.Feeder) {
+        FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2);
+        feeder1.RunEverySeconds = 30;
+        _feeders.push_back(feeder1);
+        FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2);
+        feeder2.RunEverySeconds = 30;
+        _feeders.push_back(feeder2);
+        _feederTimer.setInterval(4000, FeedFish);
+    }
 
     _selectPressTimer.setInterval(500, IsSelectPressed);
 
-    _doserTimer.setInterval(4000, RunDoser);
-
     SerialExt::Debug(RTCExt::IsRTCTimeSet());
-    RTCExt::SetRTCTime(9, 42, 0, 8, 4, 2016);
+    //RTCExt::SetRTCTime(9, 42, 0, 8, 4, 2016);
     if(!RTCExt::IsRTCTimeSet())
         _lcdDisplay.SelectMainMenu();
 }
 // the loop function runs over and over again forever
 void loop() {
-    //_dumbFuckerController.Select();
+    if(_controllerType.Doser)
+        _doserTimer.run();
+    if(_controllerType.Feeder)
+        _feederTimer.run();
+
+    if(_timersEnabled) {
+        _selectPressTimer.run();
+    }
 
 }
 void IsSelectPressed() {
@@ -176,7 +181,7 @@ void RunDoser() {
         dosers.push_back(_doser);
         RODoser::RunDemo(dosers);
     }
-    FeedFish();
+    //FeedFish();
 }
 
 
