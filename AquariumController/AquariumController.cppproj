@@ -60,7 +60,7 @@
       <ToolOptions>
         <InterfaceProperties>
           <IspClock>125000</IspClock>
-          <JtagDbgClock>200000</JtagDbgClock>
+          <JtagDbgClock>400000</JtagDbgClock>
         </InterfaceProperties>
         <InterfaceName>JTAG</InterfaceName>
       </ToolOptions>
@@ -68,7 +68,7 @@
       <ToolNumber>J41800044545</ToolNumber>
       <ToolName>Atmel-ICE</ToolName>
     </com_atmel_avrdbg_tool_atmelice>
-    <avrtoolinterfaceclock>200000</avrtoolinterfaceclock>
+    <avrtoolinterfaceclock>400000</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -437,6 +437,9 @@
     <Compile Include="Sketch.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Testers\TimeTester.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Content Include="readme.html">
     </Content>
   </ItemGroup>
@@ -448,6 +451,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AquariumController\" />
+    <Folder Include="AquariumController\EALLib\" />
     <Folder Include="ArduinoLibs\DS3232RTC" />
     <Folder Include="ArduinoLibs\LiquidCrystal" />
     <Folder Include="ArduinoLibs\SimpleTimer" />
@@ -457,6 +462,7 @@
     <Folder Include="ArduinoLibs\Wire\utility" />
     <Folder Include="ArduinoLibs" />
     <Folder Include="EALLib\" />
+    <Folder Include="Testers" />
     <Folder Include="Visualizers" />
   </ItemGroup>
   <ItemGroup>

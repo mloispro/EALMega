@@ -58,13 +58,20 @@ void IsSelectPressed();
 void FeedFish();
 void RunDoser();
 
+#include "Testers\TimeTester.h"
+using namespace Testers;
+
+
 // the setup function runs once when you press reset or power the board
 void setup() {
 
     Serial.begin(115200);
     while(!Serial);
 
-    //RTCExt::Init();
+    TimeTester _timeTester;
+    _timeTester.RunAll();
+    return;
+
     _lcdDisplay.Init();
 
     if(_controllerType.Doser) {
@@ -83,7 +90,6 @@ void setup() {
 
     _selectPressTimer.setInterval(500, IsSelectPressed);
 
-    SerialExt::Debug(RTCExt::IsRTCTimeSet());
     //RTCExt::SetRTCTime(9, 42, 0, 8, 4, 2016);
     if(!RTCExt::IsRTCTimeSet())
         _lcdDisplay.SelectMainMenu();
@@ -130,7 +136,7 @@ void FeedFish() {
     if(!runMotor && !runMotorDemo) {
         FishFeeder feeder = _feeders[0];
         runMotor = feeder.ShouldRunMotor(true);
-        SerialExt::Debug("feeder_runMotor: ", runMotor);
+        //SerialExt::Debug("feeder_runMotor: ", runMotor);
     }
 
     if(runMotor) {
