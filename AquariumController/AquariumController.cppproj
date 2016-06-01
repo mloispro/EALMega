@@ -60,7 +60,7 @@
       <ToolOptions>
         <InterfaceProperties>
           <IspClock>125000</IspClock>
-          <JtagDbgClock>400000</JtagDbgClock>
+          <JtagDbgClock>200000</JtagDbgClock>
         </InterfaceProperties>
         <InterfaceName>JTAG</InterfaceName>
       </ToolOptions>
@@ -68,7 +68,7 @@
       <ToolNumber>J41800044545</ToolNumber>
       <ToolName>Atmel-ICE</ToolName>
     </com_atmel_avrdbg_tool_atmelice>
-    <avrtoolinterfaceclock>400000</avrtoolinterfaceclock>
+    <avrtoolinterfaceclock>200000</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -191,6 +191,7 @@
         <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
         <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
         <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.SubroutinesFunctionPrologues>True</avrgcc.compiler.general.SubroutinesFunctionPrologues>
         <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
         <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
         <avrgcc.compiler.symbols.DefSymbols>
@@ -221,6 +222,7 @@
         <avrgcc.compiler.warnings.InhibitAllWarnings>True</avrgcc.compiler.warnings.InhibitAllWarnings>
         <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu11</avrgcc.compiler.miscellaneous.OtherFlags>
         <avrgcc.compiler.miscellaneous.Verbose>True</avrgcc.compiler.miscellaneous.Verbose>
+        <avrgcccpp.compiler.general.SubroutinesFunctionPrologues>True</avrgcccpp.compiler.general.SubroutinesFunctionPrologues>
         <avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>
         <avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>
         <avrgcccpp.compiler.symbols.DefSymbols>
@@ -426,6 +428,10 @@
       <SubType>compile</SubType>
       <Link>AquariumController\EALLib\ServoMotor.h</Link>
     </Compile>
+    <Compile Include="..\..\EALLib\_globals.cpp">
+      <SubType>compile</SubType>
+      <Link>AquariumController\EALLib\_globals.cpp</Link>
+    </Compile>
     <Compile Include="..\..\EALLib\_globals.h">
       <SubType>compile</SubType>
       <Link>AquariumController\EALLib\_globals.h</Link>
@@ -435,6 +441,9 @@
       <Link>AquariumController\EALLib\_SimulateDebug.h</Link>
     </Compile>
     <Compile Include="Sketch.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Testers\ServoTester.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Testers\TimeTester.h">

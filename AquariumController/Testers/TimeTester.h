@@ -38,6 +38,9 @@ using namespace Models;
 using namespace TimeHelpers;
 namespace Testers {
 
+    //alert: *(this)
+    //alert: (rtcTime,s).buffer
+
     class TimeTester {
       private:
         bool _initialized;

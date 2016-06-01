@@ -24,7 +24,8 @@ using namespace Globals;
 using namespace Utils;
 using namespace LCD;
 
-ControllerType _controllerType(true, false, true);
+//ControllerType _controllerType(true, false, true);
+
 
 #pragma region DOSER
 
@@ -37,6 +38,8 @@ RODoser _doser;
 #pragma endregion DOSER
 
 #pragma region FEEDER
+
+int _feederRunEvery = 860;
 
 vector<FishFeeder> _feeders;
 int _feederPin1 = 30;
@@ -51,55 +54,54 @@ LCDDisplay _lcdDisplay;
 
 bool _timersEnabled = true;
 SimpleTimer _selectPressTimer;
-SimpleTimer _doserTimer;
-SimpleTimer _feederTimer;
+SimpleTimer _accTimer;
+
 
 void IsSelectPressed();
 void FeedFish();
 void RunDoser();
+void AccTick();
 
 #include "Testers\TimeTester.h"
+#include "Testers\ServoTester.h"
 using namespace Testers;
-
 
 // the setup function runs once when you press reset or power the board
 void setup() {
+    Globals::InitController(true, false, true);
+
 
     Serial.begin(115200);
     while(!Serial);
 
-    TimeTester _timeTester;
-    _timeTester.RunAll();
-    return;
+    //TimeTester _timeTester; //have to init in setup!
+    //_timeTester.RunAll();
+    //ServoTester _servoTester;
+    //_servoTester.RunAll()
+    //return;
 
-    _lcdDisplay.Init();
+    _lcdDisplay.Init(); //needs to run first to init rtc.
 
-    if(_controllerType.Doser) {
-        _doser = RODoser(_servo, _doserPin, 2, 22000, _floatSwitch);
-        _doserTimer.setInterval(4000, RunDoser);
-    }
-    if(_controllerType.Feeder) {
-        FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2);
-        feeder1.RunEverySeconds = 30;
-        _feeders.push_back(feeder1);
-        FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2);
-        feeder2.RunEverySeconds = 30;
-        _feeders.push_back(feeder2);
-        _feederTimer.setInterval(4000, FeedFish);
-    }
+    //if(_controllerType.Doser) {
+    _doser = RODoser(_servo, _doserPin, 2, 22000, _floatSwitch);
+    //}
+    //if(_controllerType.Feeder) {
+    FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2, _feederRunEvery);
+    _feeders.push_back(feeder1);
+    FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2, _feederRunEvery);
+    _feeders.push_back(feeder2);
+    //}
 
+    _accTimer.setInterval(4000, AccTick);
     _selectPressTimer.setInterval(500, IsSelectPressed);
 
     //RTCExt::SetRTCTime(9, 42, 0, 8, 4, 2016);
-    if(!RTCExt::IsRTCTimeSet())
-        _lcdDisplay.SelectMainMenu();
+
 }
 // the loop function runs over and over again forever
 void loop() {
-    if(_controllerType.Doser)
-        _doserTimer.run();
-    if(_controllerType.Feeder)
-        _feederTimer.run();
+
+    _accTimer.run();
 
     if(_timersEnabled) {
         _selectPressTimer.run();
@@ -121,6 +123,12 @@ void IsSelectPressed() {
 
 }
 
+void AccTick() {
+    if(Globals::TheControllerType.Feeder)
+        FeedFish();
+    if(Globals::TheControllerType.Doser)
+        RunDoser();
+}
 void FeedFish() {
     //_rtcController.SetLastRun(AccessoryType::Feeder);
 
@@ -131,7 +139,7 @@ void FeedFish() {
 
     //1 to run, 2 to run demo
     bool runMotor = ServoMotor::ShouldRunMotorBySerialInput(incomingNum);
-    bool runMotorDemo = ServoMotor::ShouldRunMotorDemo(incomingNum);
+    bool runMotorDemo = false;//ServoMotor::ShouldRunMotorDemo(incomingNum);
 
     if(!runMotor && !runMotorDemo) {
         FishFeeder feeder = _feeders[0];
@@ -150,9 +158,6 @@ void FeedFish() {
     } else if(runMotorDemo) {
         FishFeeder::RunDemo(_feeders);
     }
-    //_secondFeeding = _secondFeeding * 3600000;
-    //SerialExt::Print("Second Feeding in (Hours): ", _secondFeeding / 3600000);
-    //delay(_secondFeeding);//delay 9 hours before next feed.
     //delay(10000); //for testing
 
 }
@@ -167,7 +172,7 @@ void RunDoser() {
 
     //1 to run, 2 to run demo
     bool runMotor = ServoMotor::ShouldRunMotorBySerialInput(incomingNum);
-    bool runMotorDemo = ServoMotor::ShouldRunMotorDemo(incomingNum);
+    bool runMotorDemo = false;//ServoMotor::ShouldRunMotorDemo(incomingNum);
 
     if(!runMotor && !runMotorDemo) {
         runMotor = _doser.ShouldRunMotor(true);
