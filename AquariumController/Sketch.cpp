@@ -164,7 +164,7 @@ void FeedFish() {
 
 void RunDoser() {
     //SerialExt::Debug("_runEverySeconds ",_runEverySeconds);
-
+    return;
     int incomingNum = SerialExt::Read();
     if(incomingNum > 0) {
         bool processed = _doser.ProcessSerialInput(incomingNum);
