@@ -29,16 +29,18 @@ using namespace LCD;
 
 #pragma region DOSER
 
+bool _doserEnabled = false;
 int _doserPin = 53;
 int _floatSwitchPin = MegaPins::A_15;
 AnalogSwitch _floatSwitch(_floatSwitchPin);
-Servo _servo;
+Servo _doserServo;
 RODoser _doser;
 
 #pragma endregion DOSER
 
 #pragma region FEEDER
 
+bool _feederEnabled = true;
 int _feederRunEvery = 860;
 
 vector<FishFeeder> _feeders;
@@ -68,13 +70,12 @@ using namespace Testers;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-    Globals::InitController(true, false, true);
-
 
     Serial.begin(115200);
     while(!Serial);
 
     //TimeTester _timeTester; //have to init in setup!
+    //_timeTester.NextRunVectorTest(AccessoryType::Feeder);
     //_timeTester.RunAll();
     //ServoTester _servoTester;
     //_servoTester.RunAll()
@@ -82,15 +83,12 @@ void setup() {
 
     _lcdDisplay.Init(); //needs to run first to init rtc.
 
-    //if(_controllerType.Doser) {
-    _doser = RODoser(_servo, _doserPin, 2, 22000, _floatSwitch);
-    //}
-    //if(_controllerType.Feeder) {
-    FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2, _feederRunEvery);
+    _doser = RODoser(_doserServo, _doserPin, 2, 22000, _floatSwitch, _doserEnabled);
+
+    FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2, _feederRunEvery, _feederEnabled);
     _feeders.push_back(feeder1);
-    FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2, _feederRunEvery);
+    FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2, _feederRunEvery, _feederEnabled);
     _feeders.push_back(feeder2);
-    //}
 
     _accTimer.setInterval(4000, AccTick);
     _selectPressTimer.setInterval(500, IsSelectPressed);
@@ -124,28 +122,16 @@ void IsSelectPressed() {
 }
 
 void AccTick() {
-    if(Globals::TheControllerType.Feeder)
+
+    if(RTCExt::IsAccEnabled(AccessoryType::Feeder))
         FeedFish();
-    if(Globals::TheControllerType.Doser)
+    if(RTCExt::IsAccEnabled(AccessoryType::DryDoser))
         RunDoser();
 }
 void FeedFish() {
-    //_rtcController.SetLastRun(AccessoryType::Feeder);
 
-    int incomingNum = SerialExt::Read();
-    if(incomingNum > 0) {
-        bool processed = _doser.ProcessSerialInput(incomingNum);
-    }
-
-    //1 to run, 2 to run demo
-    bool runMotor = ServoMotor::ShouldRunMotorBySerialInput(incomingNum);
-    bool runMotorDemo = false;//ServoMotor::ShouldRunMotorDemo(incomingNum);
-
-    if(!runMotor && !runMotorDemo) {
-        FishFeeder feeder = _feeders[0];
-        runMotor = feeder.ShouldRunMotor(true);
-        //SerialExt::Debug("feeder_runMotor: ", runMotor);
-    }
+    FishFeeder feeder = _feeders[0];
+    bool runMotor = feeder.ShouldRunMotor(true);
 
     if(runMotor) {
         //SerialExt::Print("Signaling Relay ON, pin: ", _feederPwrSigPin);
@@ -155,45 +141,60 @@ void FeedFish() {
         FishFeeder::FeedAll(_feeders);
         //SerialExt::Print("Signaling Relay OFF, pin: ", _feederPwrSigPin);
         //digitalWrite(_feederPwrSigPin, HIGH);
-    } else if(runMotorDemo) {
-        FishFeeder::RunDemo(_feeders);
     }
-    //delay(10000); //for testing
-
 }
 
 void RunDoser() {
-    //SerialExt::Debug("_runEverySeconds ",_runEverySeconds);
+
     return;
-    int incomingNum = SerialExt::Read();
-    if(incomingNum > 0) {
-        bool processed = _doser.ProcessSerialInput(incomingNum);
-    }
 
-    //1 to run, 2 to run demo
-    bool runMotor = ServoMotor::ShouldRunMotorBySerialInput(incomingNum);
-    bool runMotorDemo = false;//ServoMotor::ShouldRunMotorDemo(incomingNum);
-
-    if(!runMotor && !runMotorDemo) {
-        runMotor = _doser.ShouldRunMotor(true);
-        SerialExt::Debug("doser_runMotor: ", runMotor);
-    }
+    bool runMotor = _doser.ShouldRunMotor(true);
 
     if(runMotor) {
 
-        //int shakesOrTurns = menuController.GetShakesOrTurns(accType);
-        //_doser.Shakes = shakesOrTurns;
-
-        SerialExt::Debug("switchIsOn: ", _doser.TheSwitch.IsOn());
-        SerialExt::Debug("switchVal: ", _doser.TheSwitch.SwitchReading);
+        //SerialExt::Debug("switchIsOn: ", _doser.TheSwitch.IsOn());
+        //SerialExt::Debug("switchVal: ", _doser.TheSwitch.SwitchReading);
         _doser.Dose();
-    } else if(runMotorDemo) {
-        vector<RODoser> dosers;
-        dosers.push_back(_doser);
-        RODoser::RunDemo(dosers);
     }
-    //FeedFish();
+
 }
 
+#pragma region OLD_STUFF
 
+//void FeedFish() {
+//
+//int incomingNum = SerialExt::Read();
+//if(incomingNum > 0) {
+//bool processed = _doser.ProcessSerialInput(incomingNum);
+//}
+//
+////1 to run, 2 to run demo
+//bool runMotor = ServoMotor::ShouldRunMotorBySerialInput(incomingNum);
+//bool runMotorDemo = false;//ServoMotor::ShouldRunMotorDemo(incomingNum);
+//
+//if(!runMotor && !runMotorDemo) {
+//FishFeeder feeder = _feeders[0];
+//runMotor = feeder.ShouldRunMotor(true);
+////SerialExt::Debug("feeder_runMotor: ", runMotor);
+//}
+//
+//FishFeeder feeder = _feeders[0];
+//bool runMotor = feeder.ShouldRunMotor(true);
+//
+//if(runMotor) {
+////SerialExt::Print("Signaling Relay ON, pin: ", _feederPwrSigPin);
+////digitalWrite(_feederPwrSigPin, LOW); //to send relay signal
+////int potVal = analogRead(_potShakesPin); // reads the value of the potentiometer (value between 0 and 1023)
+////SerialExt::Print("Pot Val: ", potVal);
+//FishFeeder::FeedAll(_feeders);
+////SerialExt::Print("Signaling Relay OFF, pin: ", _feederPwrSigPin);
+////digitalWrite(_feederPwrSigPin, HIGH);
+//}
+//else if(runMotorDemo) {
+//FishFeeder::RunDemo(_feeders);
+//}
+////delay(10000); //for testing
+//
+//}
 
+#pragma endregion OLD_STUFF

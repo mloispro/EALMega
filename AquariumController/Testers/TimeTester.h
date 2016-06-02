@@ -56,8 +56,8 @@ namespace Testers {
             SetTime(1, 03, 30, 28, 5, 2016);
             SetAMPM(false);
             SetAMPM(true);
-            SetNextRun(5, AccessoryType::Feeder);
-            SetNextRun(10, AccessoryType::DryDoser);
+            SetRunEvery(5, AccessoryType::Feeder);
+            SetRunEvery(10, AccessoryType::DryDoser);
             WatchCountDown(AccessoryType::Feeder);
             WatchCountDown(AccessoryType::DryDoser);
         }
@@ -106,30 +106,41 @@ namespace Testers {
             int buffHour = timeBuffer.Hour;
         }
 
-        void SetNextRun(long seconds, AccessoryType accType) {
-            NextRunMemory& nextRunMem = RTCExt::FindNextRunInfo(accType);
+        void SetRunEvery(long seconds, AccessoryType accType) {
+            NextRunMemory& nextRunMem = RTCExt::RefreshNextRunInfo(accType);
             //NextRunMemory& doserNextRunMem = RTCExt::FindNextRunInfo(AccessoryType::DryDoser);
             //RTCExt::SetRunEvery(24, accType);
             nextRunMem.RunEvery = seconds;
             nextRunMem.NextRun = 0; //need to set to 0 so it recalculates
-            RTCExt::UpdateNextRun(accType);
+            RTCExt::RefreshNextRunInfo(accType);
         }
         void WatchCountDown(AccessoryType accType) {
-            NextRunMemory& nextRunMem = RTCExt::FindNextRunInfo(accType);
-            nextRunMem.LastRun = RTCExt::GetRTCTime();
-            while(nextRunMem.CountDown > 0) {
-                RTCExt::UpdateNextRun(accType);
-                NextRunMemory& nextRunMemWatch = RTCExt::FindNextRunInfo(accType);
+            NextRunMemory& mem = RTCExt::RefreshNextRunInfo(accType);
+            mem.LastRun = RTCExt::GetRTCTime();
+            while(mem.CountDown > 0) {
+                mem = RTCExt::RefreshNextRunInfo(accType);
 
                 //(rtcTime,s).buffer
                 auto rtcTime = GetShortDateTimeString(RTCExt::GetRTCTime(), true);
-                auto nextRun = GetShortDateTimeString(nextRunMemWatch.NextRun, true);
-                auto lastRun = GetShortDateTimeString(nextRunMemWatch.LastRun, true);
-                auto countDown = GetTimeRemainingString(nextRunMemWatch.CountDown, true);
-                auto runEvery = GetTimeRemainingString(nextRunMemWatch.RunEvery, true);
+                auto nextRun = GetShortDateTimeString(mem.NextRun, true);
+                auto lastRun = GetShortDateTimeString(mem.LastRun, true);
+                auto countDown = GetTimeRemainingString(mem.CountDown, true);
+                auto runEvery = GetTimeRemainingString(mem.RunEvery, true);
 
                 delay(2000);
             }
+        }
+        void NextRunVectorTest(AccessoryType accType) {
+            RTCExt::LoadNextRunInfos(accType);
+            //NextRunMemory& mem = RTCExt::RefreshNextRunInfo(accType);
+            NextRunMemory& mem = RTCExt::_FindNextRunInfo(accType);
+            mem.Enabled = true;
+            mem.ShakesOrTurns = 3;
+            mem.RunEvery = 100;
+            delay(1000);
+            RTCExt::RefreshNextRunInfo(accType, true);
+            NextRunMemory& mem2 = RTCExt::_FindNextRunInfo(accType);
+            int memAccType = mem2.AccType;
         }
     };
 

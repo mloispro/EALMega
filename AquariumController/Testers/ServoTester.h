@@ -53,7 +53,7 @@ namespace Testers {
             }
         }
         void AddFeeder(int pin, int runEvery) {
-            FishFeeder feeder = FishFeeder::CreateFeeder(pin, 2, runEvery);
+            FishFeeder feeder = FishFeeder::CreateFeeder(pin, 2, runEvery, true);
             _fishFeeders.push_back(feeder);
         }
 
