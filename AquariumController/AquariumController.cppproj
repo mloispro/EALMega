@@ -455,6 +455,9 @@
     <Compile Include="Sketch.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Testers\LcdTester.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Testers\ServoTester.h">
       <SubType>compile</SubType>
     </Compile>

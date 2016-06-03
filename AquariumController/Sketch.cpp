@@ -24,8 +24,6 @@ using namespace Globals;
 using namespace Utils;
 using namespace LCD;
 
-//ControllerType _controllerType(true, false, true);
-
 
 #pragma region DOSER
 
@@ -66,6 +64,7 @@ void AccTick();
 
 #include "Testers\TimeTester.h"
 #include "Testers\ServoTester.h"
+#include "Testers\LcdTester.h"
 using namespace Testers;
 
 // the setup function runs once when you press reset or power the board
@@ -74,13 +73,16 @@ void setup() {
     Serial.begin(115200);
     while(!Serial);
 
-    TimeTester _timeTester; //have to init in setup!
-    _timeTester.NextRunVectorTest(AccessoryType::Feeder, false, 100, false);
-    _timeTester.NextRunVectorTest(AccessoryType::DryDoser, false, 200, false);
-    _timeTester.NextRunVectorTest(AccessoryType::DryDoser, false, 300, false);
+    //TimeTester _timeTester; //have to init in setup!
+    //_timeTester.NextRunVectorTest(AccessoryType::Feeder, false, 100, false);
+    //_timeTester.NextRunVectorTest(AccessoryType::DryDoser, false, 200, false);
+    //_timeTester.NextRunVectorTest(AccessoryType::DryDoser, false, 300, false);
     //_timeTester.RunAll();
     //ServoTester _servoTester;
     //_servoTester.RunAll()
+    LcdTester lcdTester;
+    lcdTester.ScrollRight();
+    lcdTester.ScrollRight();
     return;
 
     _lcdDisplay.Init(); //needs to run first to init rtc.
