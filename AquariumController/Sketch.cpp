@@ -74,12 +74,14 @@ void setup() {
     Serial.begin(115200);
     while(!Serial);
 
-    //TimeTester _timeTester; //have to init in setup!
-    //_timeTester.NextRunVectorTest(AccessoryType::Feeder);
+    TimeTester _timeTester; //have to init in setup!
+    _timeTester.NextRunVectorTest(AccessoryType::Feeder, false, 100, false);
+    _timeTester.NextRunVectorTest(AccessoryType::DryDoser, false, 200, false);
+    _timeTester.NextRunVectorTest(AccessoryType::DryDoser, false, 300, false);
     //_timeTester.RunAll();
     //ServoTester _servoTester;
     //_servoTester.RunAll()
-    //return;
+    return;
 
     _lcdDisplay.Init(); //needs to run first to init rtc.
 

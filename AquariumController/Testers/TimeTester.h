@@ -130,16 +130,23 @@ namespace Testers {
                 delay(2000);
             }
         }
-        void NextRunVectorTest(AccessoryType accType) {
+        void NextRunVectorTest(AccessoryType accType, bool enabled, long runEvery, bool eraseMem) {
+
+            if(eraseMem)
+                MemoryExt::Erase();
+
+            if(enabled) //just doing this to create a variation
+                RTCExt::SaveNextRunInfos(accType);
+
             RTCExt::LoadNextRunInfos(accType);
             //NextRunMemory& mem = RTCExt::RefreshNextRunInfo(accType);
-            NextRunMemory& mem = RTCExt::_FindNextRunInfo(accType);
-            mem.Enabled = true;
+            NextRunMemory& mem = RTCExt::FindNextRunInfo(accType);
+            mem.Enabled = enabled;
             mem.ShakesOrTurns = 3;
-            mem.RunEvery = 100;
+            mem.RunEvery = runEvery;
             delay(1000);
             RTCExt::RefreshNextRunInfo(accType, true);
-            NextRunMemory& mem2 = RTCExt::_FindNextRunInfo(accType);
+            NextRunMemory& mem2 = RTCExt::FindNextRunInfo(accType);
             int memAccType = mem2.AccType;
         }
     };
