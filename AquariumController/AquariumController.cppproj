@@ -340,6 +340,14 @@
       <SubType>compile</SubType>
       <Link>ArduinoLibs\DS3232RTC\DS3232RTC.h</Link>
     </Compile>
+    <Compile Include="..\..\..\Users\lenovo\Documents\Arduino\libraries\MemoryFree\MemoryFree.cpp">
+      <SubType>compile</SubType>
+      <Link>ArduinoLibs\MemoryFree\MemoryFree.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\..\Users\lenovo\Documents\Arduino\libraries\MemoryFree\MemoryFree.h">
+      <SubType>compile</SubType>
+      <Link>ArduinoLibs\MemoryFree\MemoryFree.h</Link>
+    </Compile>
     <Compile Include="..\..\..\users\lenovo\documents\arduino\libraries\SimpleTimer\SimpleTimer.cpp">
       <SubType>compile</SubType>
       <Link>arduinolibs\SimpleTimer\SimpleTimer.cpp</Link>
@@ -468,6 +476,7 @@
     <Folder Include="AquariumController\EALLib\" />
     <Folder Include="ArduinoLibs\DS3232RTC" />
     <Folder Include="ArduinoLibs\LiquidCrystal" />
+    <Folder Include="ArduinoLibs\MemoryFree" />
     <Folder Include="ArduinoLibs\SimpleTimer" />
     <Folder Include="ArduinoLibs\Servo" />
     <Folder Include="ArduinoLibs\Wire" />

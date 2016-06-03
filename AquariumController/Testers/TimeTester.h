@@ -131,7 +131,7 @@ namespace Testers {
             }
         }
         void NextRunVectorTest(AccessoryType accType, bool enabled, long runEvery, bool eraseMem) {
-
+            String memUse = MemoryExt::GetFreeMemory().c_str();
             if(eraseMem)
                 MemoryExt::Erase();
 
@@ -141,12 +141,14 @@ namespace Testers {
             RTCExt::LoadNextRunInfos(accType);
             //NextRunMemory& mem = RTCExt::RefreshNextRunInfo(accType);
             NextRunMemory& mem = RTCExt::FindNextRunInfo(accType);
+            memUse = MemoryExt::GetFreeMemory().c_str();
             mem.Enabled = enabled;
             mem.ShakesOrTurns = 3;
             mem.RunEvery = runEvery;
             delay(1000);
             RTCExt::RefreshNextRunInfo(accType, true);
             NextRunMemory& mem2 = RTCExt::FindNextRunInfo(accType);
+            memUse = MemoryExt::GetFreeMemory().c_str();
             int memAccType = mem2.AccType;
         }
     };
