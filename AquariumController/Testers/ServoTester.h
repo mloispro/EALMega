@@ -71,6 +71,12 @@ namespace Testers {
 
             }
         }
+
+        void AddDoser(int pin, int runEvery, AnalogSwitch floatSwitch) {
+            Servo aServo;
+            RODoser doser = RODoser(aServo, pin, 2, runEvery, floatSwitch, true);
+
+        }
         void TestServo(int pin) {
             Servo aServo;
             aServo.attach(pin);

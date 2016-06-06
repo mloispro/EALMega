@@ -151,6 +151,11 @@ namespace Testers {
             memUse = MemoryExt::GetFreeMemory().c_str();
             int memAccType = mem2.AccType;
         }
+
+        void EraseMemory() {
+            MemoryExt::Erase();
+            RTCExt::ClearNextRunInfos();
+        }
     };
 
 }

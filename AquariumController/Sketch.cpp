@@ -73,17 +73,25 @@ void setup() {
     Serial.begin(115200);
     while(!Serial);
 
+    //ServoTester _servoTester;//have to init in setup!
+    //_servoTester.AddDoser(_doserPin, 22000, _floatSwitchPin);
+    //_servoTester.AddFeeder(_feederPin1, _feederRunEvery);
+    //_servoTester.AddFeeder(_feederPin2, _feederRunEvery);
     //TimeTester _timeTester; //have to init in setup!
+    //_timeTester.EraseMemory();
+    //_servoTester.AddDoser(_doserPin, 25000, _floatSwitchPin);
+    //_servoTester.AddFeeder(_feederPin1, _feederRunEvery);
+    //_servoTester.AddFeeder(_feederPin2, _feederRunEvery);
+    //_servoTester.RunAll(_feederPin1);
+    //_timeTester.SetNoon();
     //_timeTester.NextRunVectorTest(AccessoryType::Feeder, false, 100, false);
     //_timeTester.NextRunVectorTest(AccessoryType::DryDoser, false, 200, false);
     //_timeTester.NextRunVectorTest(AccessoryType::DryDoser, false, 300, false);
     //_timeTester.RunAll();
-    //ServoTester _servoTester;
-    //_servoTester.RunAll()
-    LcdTester lcdTester;
-    lcdTester.ScrollRight();
-    lcdTester.ScrollRight();
-    return;
+    //LcdTester lcdTester;
+    //lcdTester.ScrollRight();
+    //lcdTester.ScrollRight();
+    //return;
 
     _lcdDisplay.Init(); //needs to run first to init rtc.
 
@@ -113,7 +121,7 @@ void loop() {
 void IsSelectPressed() {
 
     int key = _lcdDisplay.GetKey();
-    SerialExt::Debug("key_isp", key);
+    //SerialExt::Debug("key_isp", key);
 
     if(key == 4) {
         _timersEnabled = false; //disable

@@ -39,7 +39,7 @@ namespace Testers {
       private:
         bool _initialized;
 
-        SimpleTimer _scrollLeftTimer;
+        SimpleTimer _scrollRightTimer;
         SimpleTimer _optionChangeTimer;
       public:
         static LiquidCrystal _lcd;
@@ -62,6 +62,9 @@ namespace Testers {
         }
         static void ScrollTextRight(String txt, short line) {
             if(txt.length() > 16) {
+                if(line == 0)
+                    delay(500);
+
                 int pos = (txt.length() * -1) - 12;
                 for(int i = 0; i < txt.length() - 12; i++) {
                     pos += 1;
@@ -69,8 +72,6 @@ namespace Testers {
                     _lcd.print("                 ");
                     _lcd.setCursor(pos, line);
                     _lcd.print(txt);
-                    //_lcd.setCursor(0, 0);
-                    //_lcd.print(_menuText);
                     delay(400);
                 }
                 _lcd.setCursor(0, line);
@@ -87,42 +88,8 @@ namespace Testers {
 
             ScrollTextRight(_menuText, 0);
             ScrollTextRight(_optionText, 1);
-            //if(_menuText.length() > 16) {
-            //// _lcd.setCursor(0, 1);
-            //// _lcd.autoscroll();
-            //int pos = (_menuText.length() * -1) - 12;
-            //for(int i = 0; i < _menuText.length() - 12; i++) {
-            //pos += 1;
-            ////_lcd.setCursor(pos - 1, 0);
-            ////_lcd.print(" ");
-            //_lcd.setCursor(0, 0);
-            //_lcd.print("                 ");
-            //_lcd.setCursor(pos, 0);
-            //_lcd.print(_menuText);
-            ////_lcd.setCursor(0, 1);
-            ////_lcd.print(_optionText);
-            //delay(200);
-            //}
-            //_lcd.setCursor(0, 0);
-            //_lcd.print(_menuText);
-            //}
-            //if(_optionText.length() > 16) {
-            //int pos = (_optionText.length() * -1) - 12;
-            //for(int i = 0; i < _optionText.length() - 12; i++) {
-            //pos += 1;
-            //_lcd.setCursor(0, 1);
-            //_lcd.print("                 ");
-            //_lcd.setCursor(pos, 1);
-            //_lcd.print(_optionText);
-            ////_lcd.setCursor(0, 0);
-            ////_lcd.print(_menuText);
-            //delay(200);
-            //}
-            //_lcd.setCursor(0, 1);
-            //_lcd.print(_optionText);
-            //delay(200);
-            //}
 
+            _lcd.home();
 
         }
 
@@ -132,30 +99,36 @@ namespace Testers {
 
         void ScrollRight() {
 
-            _menuText = F("long menu test so need to scroll");
+            _menuText = F("Long menu test so need to scroll");
             _optionText = F("Scrolling Option.");
 
             //delay(1000);
             int _optionChangeTimerId = _optionChangeTimer.setInterval(10000, ChangeOption);
-            int _scrollLeftTimerId = _scrollLeftTimer.setInterval(1000, ScrollText);
+            int _scrollLeftTimerId = _scrollRightTimer.setInterval(1000, ScrollText);
 
-            int maxTimers = SimpleTimer::MAX_TIMERS;
-            int numAvailTimers = _scrollLeftTimer.getNumAvailableTimers();
-            int numTimers = _scrollLeftTimer.getNumTimers();
+            //int maxTimers = SimpleTimer::MAX_TIMERS;
+            //int numAvailTimers = _scrollLeftTimer.getNumAvailableTimers();
+            //int numTimers = _scrollLeftTimer.getNumTimers();
 
             // _lcd.home();
             while(!_optionChanged) {
                 _optionChangeTimer.run();
-                _scrollLeftTimer.run();
+                _scrollRightTimer.run();
             }
             _optionChanged = false;
-            _scrollLeftTimer.deleteTimer(_scrollLeftTimerId);
+
+            _optionText = F("Option Changed Successfully!");
+
+            while(!_optionChanged) {
+                _optionChangeTimer.run();
+                _scrollRightTimer.run();
+            }
+            _optionChanged = false;
+
+            _scrollRightTimer.deleteTimer(_scrollLeftTimerId);
             _optionChangeTimer.deleteTimer(_optionChangeTimerId);
 
-            maxTimers = SimpleTimer::MAX_TIMERS;
-            numAvailTimers = _scrollLeftTimer.getNumAvailableTimers();
-            numTimers = _scrollLeftTimer.getNumTimers();
-            _lcd.home();
+
         }
 
     };
