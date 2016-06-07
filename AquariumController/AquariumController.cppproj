@@ -380,6 +380,14 @@
       <SubType>compile</SubType>
       <Link>AquariumController\EALLib\AnalogSwitch.h</Link>
     </Compile>
+    <Compile Include="..\..\EALLib\Containers.cpp">
+      <SubType>compile</SubType>
+      <Link>AquariumController\EALLib\Containers.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\Containers.h">
+      <SubType>compile</SubType>
+      <Link>AquariumController\EALLib\Containers.h</Link>
+    </Compile>
     <Compile Include="..\..\EALLib\DigitalTime.h">
       <SubType>compile</SubType>
       <Link>AquariumController\EALLib\DigitalTime.h</Link>

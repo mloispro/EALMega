@@ -91,7 +91,7 @@ void setup() {
     //LcdTester lcdTester;
     //lcdTester.ScrollRight();
     //lcdTester.ScrollRight();
-    //return;
+    // return;
 
     _lcdDisplay.Init(); //needs to run first to init rtc.
 
@@ -101,6 +101,9 @@ void setup() {
     _feeders.push_back(feeder1);
     FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2, _feederRunEvery, _feederEnabled);
     _feeders.push_back(feeder2);
+
+    //Motors.push_back(_doser);
+    //vector<ServoMotor> motors = Motors;
 
     _accTimer.setInterval(4000, AccTick);
     _selectPressTimer.setInterval(500, IsSelectPressed);

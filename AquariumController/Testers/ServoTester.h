@@ -22,11 +22,12 @@
 #include "SerialExt.h"
 #include "DigitalTime.h"
 #include "LCDMenu.h"
+//#include "Containers.h"
 
 using namespace std;
 
 using namespace Utils;
-
+//using namespace Containers;
 using namespace Models;
 using namespace TimeHelpers;
 
@@ -54,7 +55,8 @@ namespace Testers {
         }
         void AddFeeder(int pin, int runEvery) {
             FishFeeder feeder = FishFeeder::CreateFeeder(pin, 2, runEvery, true);
-            _fishFeeders.push_back(feeder);
+            //Motors.push_back(feeder);
+            //_fishFeeders.push_back(feeder);
         }
 
         void FeedFish(int runs) {
@@ -75,7 +77,10 @@ namespace Testers {
         void AddDoser(int pin, int runEvery, AnalogSwitch floatSwitch) {
             Servo aServo;
             RODoser doser = RODoser(aServo, pin, 2, runEvery, floatSwitch, true);
-
+            //
+            //RODoser& doser1 = Containers::AddMotor(doser);
+            //RODoser& doser2 = Containers::FindMotor(AccessoryType::DryDoser);
+            //int pinr = doser2.RelayPin;
         }
         void TestServo(int pin) {
             Servo aServo;
