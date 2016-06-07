@@ -17,7 +17,7 @@ using namespace std;
 #include "RODoser.h"
 #include "FishFeeder.h"
 #include "ServoMotor.h"
-//#include <LCDMenu.h>
+#include "LCDMenu.h"
 #include "LCDDisplay.h"
 
 using namespace Globals;
