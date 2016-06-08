@@ -31,6 +31,7 @@ bool _doserEnabled = false;
 int _doserPin = 53;
 int _floatSwitchPin = MegaPins::A_15;
 AnalogSwitch _floatSwitch(_floatSwitchPin);
+int _doserRelayPin = 26;
 Servo _doserServo;
 RODoser _doser;
 
@@ -62,6 +63,7 @@ void FeedFish();
 void RunDoser();
 void AccTick();
 
+//todo: comment this out
 #include "Testers\TimeTester.h"
 #include "Testers\ServoTester.h"
 #include "Testers\LcdTester.h"
@@ -73,7 +75,9 @@ void setup() {
     Serial.begin(115200);
     while(!Serial);
 
-    //ServoTester _servoTester;//have to init in setup!
+    ServoTester _servoTester;//have to init in setup!
+    //_servoTester.RunDoser(_doserPin, 5, _doserRelayPin, _floatSwitchPin);
+    //_servoTester.RunDoser(_doserPin, 5, _doserRelayPin, _floatSwitchPin);
     //_servoTester.AddDoser(_doserPin, 22000, _floatSwitchPin);
     //_servoTester.AddFeeder(_feederPin1, _feederRunEvery);
     //_servoTester.AddFeeder(_feederPin2, _feederRunEvery);
@@ -82,7 +86,7 @@ void setup() {
     //_servoTester.AddDoser(_doserPin, 25000, _floatSwitchPin);
     //_servoTester.AddFeeder(_feederPin1, _feederRunEvery);
     //_servoTester.AddFeeder(_feederPin2, _feederRunEvery);
-    //_servoTester.RunAll(_feederPin1);
+    _servoTester.RunAll(_feederPin1);
     //_timeTester.SetNoon();
     //_timeTester.NextRunVectorTest(AccessoryType::Feeder, false, 100, false);
     //_timeTester.NextRunVectorTest(AccessoryType::DryDoser, false, 200, false);
@@ -91,7 +95,7 @@ void setup() {
     //LcdTester lcdTester;
     //lcdTester.ScrollRight();
     //lcdTester.ScrollRight();
-    // return;
+    return;
 
     _lcdDisplay.Init(); //needs to run first to init rtc.
 
@@ -169,7 +173,7 @@ void RunDoser() {
 
         //SerialExt::Debug("switchIsOn: ", _doser.TheSwitch.IsOn());
         //SerialExt::Debug("switchVal: ", _doser.TheSwitch.SwitchReading);
-        _doser.Dose();
+        _doser.Run();
     }
 
 }

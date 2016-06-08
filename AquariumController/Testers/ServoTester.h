@@ -21,6 +21,8 @@
 #include "MemoryExt.h"
 #include "SerialExt.h"
 #include "DigitalTime.h"
+#include "RTCExt.h"
+#include "MemoryExt.h"
 #include "LCDMenu.h"
 //#include "Containers.h"
 
@@ -38,7 +40,7 @@ namespace Testers {
     class ServoTester {
       private:
         bool _initialized;
-
+        bool _startEnabled;
       public:
         void RunAll(int pin) {
             AddFeeder(pin, 15);
@@ -53,17 +55,36 @@ namespace Testers {
                 _initialized = true;
             }
         }
+        void preRun(long runEvery, AccessoryType accType) {
+            NextRunMemory& mem = RTCExt::RefreshNextRunInfo(accType);
+            _startEnabled = mem.Enabled;
+            mem.Enabled = true;
+            RTCExt::RefreshNextRunInfo(accType, true);
+
+            RTCExt::SetRunEverySeconds(runEvery, accType);
+
+            long delayTime = runEvery * 1000 + 1000;
+            delay(delayTime);
+        }
+        void postRun(AccessoryType accType) {
+            NextRunMemory& mem = RTCExt::RefreshNextRunInfo(accType);
+            mem.Enabled = _startEnabled;
+            RTCExt::RefreshNextRunInfo(accType, true);
+        }
         void AddFeeder(int pin, int runEvery) {
+
             FishFeeder feeder = FishFeeder::CreateFeeder(pin, 2, runEvery, true);
+            AccessoryType accType = feeder.MotorType;
             //Motors.push_back(feeder);
-            //_fishFeeders.push_back(feeder);
+            _fishFeeders.push_back(feeder);
         }
 
         void FeedFish(int runs) {
-
+            preRun(0, AccessoryType::Feeder);
             int runCount = 0;
             while(runCount < runs) {
                 FishFeeder feeder = _fishFeeders[0];
+                AccessoryType accType = feeder.MotorType;
                 bool runMotor = feeder.ShouldRunMotor(true);
                 if(runMotor) {
                     FishFeeder::FeedAll(_fishFeeders);
@@ -72,6 +93,7 @@ namespace Testers {
                 delay(1000);
 
             }
+            postRun(AccessoryType::Feeder);
         }
 
         void AddDoser(int pin, int runEvery, AnalogSwitch floatSwitch) {
@@ -82,6 +104,22 @@ namespace Testers {
             //RODoser& doser2 = Containers::FindMotor(AccessoryType::DryDoser);
             //int pinr = doser2.RelayPin;
         }
+
+        void RunDoser(int pin, long runEvery, short relayPin, AnalogSwitch floatSwitch) {
+            preRun(runEvery, AccessoryType::DryDoser);
+
+            Servo aServo;
+            RODoser doser = RODoser(aServo, pin, 2, relayPin, runEvery, floatSwitch, true);
+
+            bool isTimeToRun = doser.ShouldRunMotor(false);
+
+            if(isTimeToRun) {
+                doser.Run();
+            }
+            postRun(AccessoryType::DryDoser);
+
+        }
+
         void TestServo(int pin) {
             Servo aServo;
             aServo.attach(pin);

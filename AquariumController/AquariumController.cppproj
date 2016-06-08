@@ -424,6 +424,14 @@
       <SubType>compile</SubType>
       <Link>AquariumController\EALLib\MemoryExt.h</Link>
     </Compile>
+    <Compile Include="..\..\EALLib\Motor.cpp">
+      <SubType>compile</SubType>
+      <Link>AquariumController\EALLib\Motor.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\Motor.h">
+      <SubType>compile</SubType>
+      <Link>AquariumController\EALLib\Motor.h</Link>
+    </Compile>
     <Compile Include="..\..\EALLib\RODoser.cpp">
       <SubType>compile</SubType>
       <Link>AquariumController\EALLib\RODoser.cpp</Link>
