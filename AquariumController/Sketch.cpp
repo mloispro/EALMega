@@ -17,6 +17,7 @@ using namespace std;
 #include "RODoser.h"
 #include "FishFeeder.h"
 #include "ServoMotor.h"
+#include "Pump.h"
 #include "LCDMenu.h"
 #include "LCDDisplay.h"
 
@@ -50,6 +51,18 @@ int _feederPin4 = 33;
 
 #pragma endregion FEEDER
 
+#pragma region PUMP
+
+//todo: enter pump values
+bool _pumpEnabled = false;
+int _pumpPin = 53;
+int _pumpFloatSwitchPin = MegaPins::A_15;
+AnalogSwitch _pumpFloatSwitch(_pumpFloatSwitchPin);
+int _pumpRelayPin = 26;
+Pump _pump;
+
+#pragma endregion PUMP
+
 //LiquidCrystal _lcd(8, 9, 4, 5, 6, 7);
 LCDDisplay _lcdDisplay;
 
@@ -75,7 +88,8 @@ void setup() {
     Serial.begin(115200);
     while(!Serial);
 
-    ServoTester _servoTester;//have to init in setup!
+    //ServoTester _servoTester;//have to init in setup!
+    //_servoTester.RunPump(_pumpPin, 5, _pumpRelayPin, _pumpFloatSwitch);
     //_servoTester.RunDoser(_doserPin, 5, _doserRelayPin, _floatSwitchPin);
     //_servoTester.RunDoser(_doserPin, 5, _doserRelayPin, _floatSwitchPin);
     //_servoTester.AddDoser(_doserPin, 22000, _floatSwitchPin);
@@ -86,7 +100,7 @@ void setup() {
     //_servoTester.AddDoser(_doserPin, 25000, _floatSwitchPin);
     //_servoTester.AddFeeder(_feederPin1, _feederRunEvery);
     //_servoTester.AddFeeder(_feederPin2, _feederRunEvery);
-    _servoTester.RunAll(_feederPin1);
+    //_servoTester.RunAll(_feederPin1);
     //_timeTester.SetNoon();
     //_timeTester.NextRunVectorTest(AccessoryType::Feeder, false, 100, false);
     //_timeTester.NextRunVectorTest(AccessoryType::DryDoser, false, 200, false);
@@ -95,7 +109,7 @@ void setup() {
     //LcdTester lcdTester;
     //lcdTester.ScrollRight();
     //lcdTester.ScrollRight();
-    return;
+    //return;
 
     _lcdDisplay.Init(); //needs to run first to init rtc.
 
@@ -106,6 +120,7 @@ void setup() {
     FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2, _feederRunEvery, _feederEnabled);
     _feeders.push_back(feeder2);
 
+    _pump = Pump(_pumpPin, 2, _pumpRelayPin, 604800, _pumpFloatSwitch, _pumpEnabled); //weekly
     //Motors.push_back(_doser);
     //vector<ServoMotor> motors = Motors;
 

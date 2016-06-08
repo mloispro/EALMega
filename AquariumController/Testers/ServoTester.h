@@ -120,6 +120,20 @@ namespace Testers {
 
         }
 
+        void RunPump(int pin, long runEvery, short relayPin, AnalogSwitch floatSwitch) {
+            preRun(runEvery, AccessoryType::WaterPump);
+
+            Pump pump = Pump(pin, 2, relayPin, runEvery, floatSwitch, true);
+
+            bool isTimeToRun = pump.ShouldRunMotor(false);
+
+            if(isTimeToRun) {
+                pump.Run();
+            }
+            postRun(AccessoryType::WaterPump);
+
+        }
+
         void TestServo(int pin) {
             Servo aServo;
             aServo.attach(pin);

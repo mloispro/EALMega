@@ -432,6 +432,14 @@
       <SubType>compile</SubType>
       <Link>AquariumController\EALLib\Motor.h</Link>
     </Compile>
+    <Compile Include="..\..\EALLib\Pump.cpp">
+      <SubType>compile</SubType>
+      <Link>AquariumController\EALLib\Pump.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\Pump.h">
+      <SubType>compile</SubType>
+      <Link>AquariumController\EALLib\Pump.h</Link>
+    </Compile>
     <Compile Include="..\..\EALLib\RODoser.cpp">
       <SubType>compile</SubType>
       <Link>AquariumController\EALLib\RODoser.cpp</Link>
