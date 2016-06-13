@@ -25,14 +25,22 @@ using namespace Globals;
 using namespace Utils;
 using namespace LCD;
 
+int _feederPin1 = 30;
+int _feederPin2 = 31;
+int _feederPin3 = 32;
+int _feederPin4 = 33;
+int _doserPin = 53;
+int _doserRelayPin = 26;
+int _doserFloatSwitchPin = MegaPins::A_15;
+//todo: enter pump values
+int _pumpPin = 53;
+int _pumpRelayPin = 26;
+int _pumpFloatSwitchPin = MegaPins::A_15;
 
 #pragma region DOSER
 
 bool _doserEnabled = false;
-int _doserPin = 53;
-int _floatSwitchPin = MegaPins::A_15;
-AnalogSwitch _floatSwitch(_floatSwitchPin);
-int _doserRelayPin = 26;
+AnalogSwitch _doserFloatSwitch(_doserFloatSwitchPin);
 Servo _doserServo;
 RODoser _doser;
 
@@ -42,23 +50,14 @@ RODoser _doser;
 
 bool _feederEnabled = true;
 int _feederRunEvery = 860;
-
 vector<FishFeeder> _feeders;
-int _feederPin1 = 30;
-int _feederPin2 = 31;
-int _feederPin3 = 32;
-int _feederPin4 = 33;
 
 #pragma endregion FEEDER
 
 #pragma region PUMP
 
-//todo: enter pump values
 bool _pumpEnabled = false;
-int _pumpPin = 53;
-int _pumpFloatSwitchPin = MegaPins::A_15;
 AnalogSwitch _pumpFloatSwitch(_pumpFloatSwitchPin);
-int _pumpRelayPin = 26;
 Pump _pump;
 
 #pragma endregion PUMP
@@ -75,6 +74,7 @@ void IsSelectPressed();
 void FeedFish();
 void RunDoser();
 void AccTick();
+void RunPump();
 
 //todo: comment this out
 #include "Testers\TimeTester.h"
@@ -89,7 +89,7 @@ void setup() {
     while(!Serial);
 
     //ServoTester _servoTester;//have to init in setup!
-    //_servoTester.RunPump(_pumpPin, 5, _pumpRelayPin, _pumpFloatSwitch);
+    //_servoTester.RunPumpLoop(_pumpPin, 5, _pumpRelayPin, _pumpFloatSwitch, 10);
     //_servoTester.RunDoser(_doserPin, 5, _doserRelayPin, _floatSwitchPin);
     //_servoTester.RunDoser(_doserPin, 5, _doserRelayPin, _floatSwitchPin);
     //_servoTester.AddDoser(_doserPin, 22000, _floatSwitchPin);
@@ -109,11 +109,11 @@ void setup() {
     //LcdTester lcdTester;
     //lcdTester.ScrollRight();
     //lcdTester.ScrollRight();
-    //return;
+    // return;
 
     _lcdDisplay.Init(); //needs to run first to init rtc.
 
-    _doser = RODoser(_doserServo, _doserPin, 2, 22000, _floatSwitch, _doserEnabled);
+    _doser = RODoser(_doserServo, _doserPin, 2, 22000, _doserFloatSwitch, _doserEnabled);
 
     FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2, _feederRunEvery, _feederEnabled);
     _feeders.push_back(feeder1);
@@ -161,6 +161,8 @@ void AccTick() {
         FeedFish();
     if(RTCExt::IsAccEnabled(AccessoryType::DryDoser))
         RunDoser();
+    if(RTCExt::IsAccEnabled(AccessoryType::WaterPump))
+        RunPump();
 }
 void FeedFish() {
 
@@ -180,8 +182,6 @@ void FeedFish() {
 
 void RunDoser() {
 
-    return;
-
     bool runMotor = _doser.ShouldRunMotor(true);
 
     if(runMotor) {
@@ -189,6 +189,16 @@ void RunDoser() {
         //SerialExt::Debug("switchIsOn: ", _doser.TheSwitch.IsOn());
         //SerialExt::Debug("switchVal: ", _doser.TheSwitch.SwitchReading);
         _doser.Run();
+    }
+
+}
+
+void RunPump() {
+
+    bool runMotor = _pump.ShouldRunMotor(true);
+
+    if(runMotor) {
+        _pump.Run();
     }
 
 }

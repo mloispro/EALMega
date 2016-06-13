@@ -41,6 +41,7 @@ namespace Testers {
       private:
         bool _initialized;
         bool _startEnabled;
+        int _startDurration;
       public:
         void RunAll(int pin) {
             AddFeeder(pin, 15);
@@ -58,7 +59,9 @@ namespace Testers {
         void preRun(long runEvery, AccessoryType accType) {
             NextRunMemory& mem = RTCExt::RefreshNextRunInfo(accType);
             _startEnabled = mem.Enabled;
+            _startDurration = 30;
             mem.Enabled = true;
+            mem.RunDurration = _startDurration;
             RTCExt::RefreshNextRunInfo(accType, true);
 
             RTCExt::SetRunEverySeconds(runEvery, accType);
@@ -69,6 +72,7 @@ namespace Testers {
         void postRun(AccessoryType accType) {
             NextRunMemory& mem = RTCExt::RefreshNextRunInfo(accType);
             mem.Enabled = _startEnabled;
+            mem.RunDurration = _startDurration;
             RTCExt::RefreshNextRunInfo(accType, true);
         }
         void AddFeeder(int pin, int runEvery) {
@@ -131,6 +135,15 @@ namespace Testers {
                 pump.Run();
             }
             postRun(AccessoryType::WaterPump);
+
+        }
+        void RunPumpLoop(int pin, long runEvery, short relayPin, AnalogSwitch floatSwitch, int loop) {
+            int loopCount = 0;
+            while(loop > loopCount) {
+                loopCount++;
+                RunPump(pin, runEvery, relayPin, floatSwitch);
+                delay(2000);
+            }
 
         }
 
