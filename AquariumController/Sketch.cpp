@@ -35,7 +35,7 @@ int _doserFloatSwitchPin = MegaPins::A_15;
 //todo: enter pump values
 int _pumpPin = 53;
 int _pumpRelayPin = 26;
-int _pumpFloatSwitchPin = MegaPins::A_15;
+//int _pumpFloatSwitchPin = MegaPins::A_15;
 
 #pragma region DOSER
 
@@ -57,7 +57,7 @@ vector<FishFeeder> _feeders;
 #pragma region PUMP
 
 bool _pumpEnabled = false;
-AnalogSwitch _pumpFloatSwitch(_pumpFloatSwitchPin);
+//AnalogSwitch _pumpFloatSwitch(_pumpFloatSwitchPin);
 Pump _pump;
 
 #pragma endregion PUMP
@@ -77,16 +77,19 @@ void AccTick();
 void RunPump();
 
 //todo: comment this out
-#include "Testers\TimeTester.h"
-#include "Testers\ServoTester.h"
-#include "Testers\LcdTester.h"
-using namespace Testers;
+//#include "Testers\TimeTester.h"
+//#include "Testers\ServoTester.h"
+//#include "Testers\LcdTester.h"
+//using namespace Testers;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
 
     Serial.begin(115200);
     while(!Serial);
+
+    //todo: comment this out
+    //MemoryExt::Erase();
 
     //ServoTester _servoTester;//have to init in setup!
     //_servoTester.RunPumpLoop(_pumpPin, 5, _pumpRelayPin, _pumpFloatSwitch, 10);
@@ -119,8 +122,12 @@ void setup() {
     _feeders.push_back(feeder1);
     FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2, _feederRunEvery, _feederEnabled);
     _feeders.push_back(feeder2);
+    FishFeeder feeder3 = FishFeeder::CreateFeeder(_feederPin3, 2, _feederRunEvery, _feederEnabled);
+    _feeders.push_back(feeder3);
+    FishFeeder feeder4 = FishFeeder::CreateFeeder(_feederPin4, 2, _feederRunEvery, _feederEnabled);
+    _feeders.push_back(feeder4);
 
-    _pump = Pump(_pumpPin, 2, _pumpRelayPin, 604800, _pumpFloatSwitch, _pumpEnabled); //weekly
+    _pump = Pump(_pumpPin, 2, _pumpRelayPin, 604800, _pumpEnabled); //weekly
     //Motors.push_back(_doser);
     //vector<ServoMotor> motors = Motors;
 
