@@ -32,7 +32,6 @@ int _feederPin4 = 33;
 int _doserPin = 53;
 int _doserRelayPin = 26;
 int _doserFloatSwitchPin = MegaPins::A_15;
-//todo: enter pump values
 int _pumpPin = 53;
 int _pumpRelayPin = 26;
 //int _pumpFloatSwitchPin = MegaPins::A_15;
