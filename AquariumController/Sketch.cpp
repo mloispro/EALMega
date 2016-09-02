@@ -20,21 +20,24 @@ using namespace std;
 #include "Pump.h"
 #include "LCDMenu.h"
 #include "LCDDisplay.h"
+#include "ROPump.h"
 
 using namespace Globals;
 using namespace Utils;
 using namespace LCD;
 
-int _feederPin1 = 30;
-int _feederPin2 = 31;
-int _feederPin3 = 32;
-int _feederPin4 = 33;
+//**leave doser pins set even tho the tank doesnt have any dosers. The Tank and RO Water share the same LCD menu so need these.
+//int _feederPin1 = 30;
+//int _feederPin2 = 31;
+//int _feederPin3 = 32;
+//int _feederPin4 = 33;
 int _doserPin = 53;
 int _doserRelayPin = 26;
-int _doserFloatSwitchPin = MegaPins::A_15;
-int _pumpPin = 53;
-int _pumpRelayPin = 26;
-//int _pumpFloatSwitchPin = MegaPins::A_15;
+int _doserFloatSwitchPin = A8;
+int _tankPumpPin = 28;
+int _roPumpFloatSwitchPin = A9;
+int _roPumpPin = 29;
+int _waterSensorPin = A10;
 
 #pragma region DOSER
 
@@ -47,19 +50,23 @@ RODoser _doser;
 
 #pragma region FEEDER
 
-bool _feederEnabled = true;
-int _feederRunEvery = 860;
-vector<FishFeeder> _feeders;
+//bool _feederEnabled = true;
+//int _feederRunEvery = 860;
+//vector<FishFeeder> _feeders;
 
 #pragma endregion FEEDER
 
 #pragma region PUMP
 
-bool _pumpEnabled = false;
-//AnalogSwitch _pumpFloatSwitch(_pumpFloatSwitchPin);
-Pump _pump;
+bool _tankPumpEnabled = false;
+Pump _tankPump;
+AnalogSwitch _roPumpFloatSwitch(_roPumpFloatSwitchPin);
+ROPump _roPump;
+AnalogSwitch _waterSensor(_waterSensorPin, 350);
 
 #pragma endregion PUMP
+
+#pragma region INIT
 
 //LiquidCrystal _lcd(8, 9, 4, 5, 6, 7);
 LCDDisplay _lcdDisplay;
@@ -73,7 +80,10 @@ void IsSelectPressed();
 void FeedFish();
 void RunDoser();
 void AccTick();
-void RunPump();
+void RunTankPump();
+void RunROPump();
+
+#pragma endregion INIT
 
 //todo: comment this out
 //#include "Testers\TimeTester.h"
@@ -117,16 +127,17 @@ void setup() {
 
     _doser = RODoser(_doserServo, _doserPin, 2, 22000, _doserFloatSwitch, _doserEnabled);
 
-    FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2, _feederRunEvery, _feederEnabled);
-    _feeders.push_back(feeder1);
-    FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2, _feederRunEvery, _feederEnabled);
-    _feeders.push_back(feeder2);
-    FishFeeder feeder3 = FishFeeder::CreateFeeder(_feederPin3, 2, _feederRunEvery, _feederEnabled);
-    _feeders.push_back(feeder3);
-    FishFeeder feeder4 = FishFeeder::CreateFeeder(_feederPin4, 2, _feederRunEvery, _feederEnabled);
-    _feeders.push_back(feeder4);
+    //FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2, _feederRunEvery, _feederEnabled);
+    //_feeders.push_back(feeder1);
+    //FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2, _feederRunEvery, _feederEnabled);
+    //_feeders.push_back(feeder2);
+    //FishFeeder feeder3 = FishFeeder::CreateFeeder(_feederPin3, 2, _feederRunEvery, _feederEnabled);
+    //_feeders.push_back(feeder3);
+    //FishFeeder feeder4 = FishFeeder::CreateFeeder(_feederPin4, 2, _feederRunEvery, _feederEnabled);
+    //_feeders.push_back(feeder4);
 
-    _pump = Pump(_pumpPin, 2, _pumpRelayPin, 604800, _pumpEnabled); //weekly
+    _tankPump = Pump(_tankPumpPin, 2, _tankPumpPin, 604800, _tankPumpEnabled); //weekly
+    _roPump = ROPump(_roPumpPin, _roPumpFloatSwitchPin, _waterSensor, true);
     //Motors.push_back(_doser);
     //vector<ServoMotor> motors = Motors;
 
@@ -134,6 +145,7 @@ void setup() {
     _selectPressTimer.setInterval(500, IsSelectPressed);
 
     //RTCExt::SetRTCTime(9, 42, 0, 8, 4, 2016);
+
 
 }
 // the loop function runs over and over again forever
@@ -163,27 +175,31 @@ void IsSelectPressed() {
 
 void AccTick() {
 
-    if(RTCExt::IsAccEnabled(AccessoryType::Feeder))
+    if(RTCExt::IsAccEnabled(AccessoryType::Feeder)) {
         FeedFish();
-    if(RTCExt::IsAccEnabled(AccessoryType::DryDoser))
+    }
+    if(RTCExt::IsAccEnabled(AccessoryType::DryDoser)) {
         RunDoser();
-    if(RTCExt::IsAccEnabled(AccessoryType::WaterPump))
-        RunPump();
+    }
+    if(RTCExt::IsAccEnabled(AccessoryType::WaterPump)) {
+        RunTankPump();
+    }
+    RunROPump();
 }
 void FeedFish() {
-
-    FishFeeder feeder = _feeders[0];
-    bool runMotor = feeder.ShouldRunMotor(true);
-
-    if(runMotor) {
-        //SerialExt::Print("Signaling Relay ON, pin: ", _feederPwrSigPin);
-        //digitalWrite(_feederPwrSigPin, LOW); //to send relay signal
-        //int potVal = analogRead(_potShakesPin); // reads the value of the potentiometer (value between 0 and 1023)
-        //SerialExt::Print("Pot Val: ", potVal);
-        FishFeeder::FeedAll(_feeders);
-        //SerialExt::Print("Signaling Relay OFF, pin: ", _feederPwrSigPin);
-        //digitalWrite(_feederPwrSigPin, HIGH);
-    }
+    //
+    //FishFeeder feeder = _feeders[0];
+    //bool runMotor = feeder.ShouldRunMotor(true);
+    //
+    //if(runMotor) {
+    ////SerialExt::Print("Signaling Relay ON, pin: ", _feederPwrSigPin);
+    ////digitalWrite(_feederPwrSigPin, LOW); //to send relay signal
+    ////int potVal = analogRead(_potShakesPin); // reads the value of the potentiometer (value between 0 and 1023)
+    ////SerialExt::Print("Pot Val: ", potVal);
+    //FishFeeder::FeedAll(_feeders);
+    ////SerialExt::Print("Signaling Relay OFF, pin: ", _feederPwrSigPin);
+    ////digitalWrite(_feederPwrSigPin, HIGH);
+    //}
 }
 
 void RunDoser() {
@@ -199,52 +215,34 @@ void RunDoser() {
 
 }
 
-void RunPump() {
+void RunTankPump() {
 
-    bool runMotor = _pump.ShouldRunMotor(true);
+    bool runMotor = _tankPump.ShouldRunMotor(true);
 
     if(runMotor) {
-        _pump.Run();
+        _tankPump.Run();
+    }
+
+    runMotor = _roPump.TheSwitch.IsOn();
+
+    if(runMotor) {
+        _roPump.Run();
+    }
+
+}
+
+void RunROPump() {
+
+    bool runMotor = _roPump.IsOkToRun();
+
+    if(runMotor) {
+        _roPump.Run();
     }
 
 }
 
 #pragma region OLD_STUFF
 
-//void FeedFish() {
-//
-//int incomingNum = SerialExt::Read();
-//if(incomingNum > 0) {
-//bool processed = _doser.ProcessSerialInput(incomingNum);
-//}
-//
-////1 to run, 2 to run demo
-//bool runMotor = ServoMotor::ShouldRunMotorBySerialInput(incomingNum);
-//bool runMotorDemo = false;//ServoMotor::ShouldRunMotorDemo(incomingNum);
-//
-//if(!runMotor && !runMotorDemo) {
-//FishFeeder feeder = _feeders[0];
-//runMotor = feeder.ShouldRunMotor(true);
-////SerialExt::Debug("feeder_runMotor: ", runMotor);
-//}
-//
-//FishFeeder feeder = _feeders[0];
-//bool runMotor = feeder.ShouldRunMotor(true);
-//
-//if(runMotor) {
-////SerialExt::Print("Signaling Relay ON, pin: ", _feederPwrSigPin);
-////digitalWrite(_feederPwrSigPin, LOW); //to send relay signal
-////int potVal = analogRead(_potShakesPin); // reads the value of the potentiometer (value between 0 and 1023)
-////SerialExt::Print("Pot Val: ", potVal);
-//FishFeeder::FeedAll(_feeders);
-////SerialExt::Print("Signaling Relay OFF, pin: ", _feederPwrSigPin);
-////digitalWrite(_feederPwrSigPin, HIGH);
-//}
-//else if(runMotorDemo) {
-//FishFeeder::RunDemo(_feeders);
-//}
-////delay(10000); //for testing
-//
-//}
+
 
 #pragma endregion OLD_STUFF
