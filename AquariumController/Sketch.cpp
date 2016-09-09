@@ -33,11 +33,11 @@ using namespace LCD;
 //int _feederPin4 = 33;
 int _doserPin = 53;
 int _doserRelayPin = 26;
-int _doserFloatSwitchPin = A8;
+int _doserFloatSwitchPin = A8;//MegaPins::A_8;
 int _tankPumpPin = 28;
-int _roPumpFloatSwitchPin = A9;
+int _roPumpFloatSwitchPin = A9;//MegaPins::A_9;
 int _roPumpPin = 29;
-int _waterSensorPin = A10;
+int _waterSensorPin = A10;//MegaPins::A_10;
 
 #pragma region DOSER
 
@@ -62,7 +62,7 @@ bool _tankPumpEnabled = false;
 Pump _tankPump;
 AnalogSwitch _roPumpFloatSwitch(_roPumpFloatSwitchPin);
 ROPump _roPump;
-AnalogSwitch _waterSensor(_waterSensorPin, 350);
+AnalogSwitch _waterSensor(_waterSensorPin, 650); //todo: set max per tank.
 
 #pragma endregion PUMP
 
@@ -137,7 +137,10 @@ void setup() {
     //_feeders.push_back(feeder4);
 
     _tankPump = Pump(_tankPumpPin, 2, _tankPumpPin, 604800, _tankPumpEnabled); //weekly
+    _tankPump.SetRelayHigh();
     _roPump = ROPump(_roPumpPin, _roPumpFloatSwitchPin, _waterSensor, true);
+    _roPump.SetRelayHigh();
+
     //Motors.push_back(_doser);
     //vector<ServoMotor> motors = Motors;
 
@@ -216,23 +219,17 @@ void RunDoser() {
 }
 
 void RunTankPump() {
-
+    SerialExt::Debug(F("Tank Pump"));
     bool runMotor = _tankPump.ShouldRunMotor(true);
 
     if(runMotor) {
         _tankPump.Run();
     }
 
-    runMotor = _roPump.TheSwitch.IsOn();
-
-    if(runMotor) {
-        _roPump.Run();
-    }
-
 }
 
 void RunROPump() {
-
+    SerialExt::Debug(F("RO Pump"));
     bool runMotor = _roPump.IsOkToRun();
 
     if(runMotor) {
