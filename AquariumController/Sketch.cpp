@@ -21,6 +21,7 @@ using namespace std;
 #include "LCDMenu.h"
 #include "LCDDisplay.h"
 #include "ROPump.h"
+#include "LiquidDoser.h"
 
 using namespace Globals;
 using namespace Utils;
@@ -38,6 +39,7 @@ int _tankPumpPin = 28;
 int _roPumpFloatSwitchPin = A9;//MegaPins::A_9;
 int _roPumpPin = 29;
 int _highWaterFloatSwitchPin = A10;//MegaPins::A_10;
+int _ghDoserPin = 40;
 
 #pragma region DOSER
 
@@ -62,9 +64,15 @@ bool _tankPumpEnabled = false;
 Pump _tankPump;
 AnalogSwitch _roPumpFloatSwitch(_roPumpFloatSwitchPin);
 ROPump _roPump;
-AnalogSwitch _highWaterFloatSwitch(_highWaterFloatSwitchPin, 900); //todo: set max per tank.
+AnalogSwitch _highWaterFloatSwitch(_highWaterFloatSwitchPin, 900);
 
 #pragma endregion PUMP
+
+#pragma region LIQUIDDOSER
+
+LiquidDoser _ghDoser(_ghDoserPin, 5);
+
+#pragma endregion LIQUIDDOSER
 
 #pragma region INIT
 
@@ -141,6 +149,10 @@ void setup() {
     _roPump = ROPump(_roPumpPin, _roPumpFloatSwitchPin, _highWaterFloatSwitchPin, true);
     _roPump.SetRelayHigh();
 
+    //_ghDoser = LiquidDoser(_ghDoserPin, 5);
+    _ghDoser.Run(); //todo: move this after tds is hooked up.
+    _ghDoser.SetRunDurration(8);
+    _ghDoser.Run();
     //Motors.push_back(_doser);
     //vector<ServoMotor> motors = Motors;
 
@@ -237,6 +249,9 @@ void RunROPump() {
     }
 
 }
+
+
+
 
 #pragma region OLD_STUFF
 

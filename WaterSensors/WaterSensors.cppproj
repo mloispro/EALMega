@@ -417,6 +417,26 @@
       <SubType>compile</SubType>
       <Link>EALLib\PHSensor.h</Link>
     </Compile>
+    <Compile Include="..\..\EALLib\TDSSensor.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\TDSSensor.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\TDSSensor.h">
+      <SubType>compile</SubType>
+      <Link>EALLib\TDSSensor.h</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\WaterSensorWire.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\WaterSensorWire.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\WaterSensorWire.h">
+      <SubType>compile</SubType>
+      <Link>EALLib\WaterSensorWire.h</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\_globalsWaterSensors.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\_globalsWaterSensors.cpp</Link>
+    </Compile>
     <Compile Include="..\..\EALLib\_globalsWaterSensors.h">
       <SubType>compile</SubType>
       <Link>EALLib\_globalsWaterSensors.h</Link>
