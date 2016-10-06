@@ -305,35 +305,35 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\Wire\src\utility\twi.c">
+    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\Wire\utility\twi.c">
       <SubType>compile</SubType>
       <Link>ArduinoLibs\Wire\utility\twi.c</Link>
     </Compile>
-    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\Wire\src\utility\twi.h">
+    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\Wire\utility\twi.h">
       <SubType>compile</SubType>
       <Link>ArduinoLibs\Wire\utility\twi.h</Link>
     </Compile>
-    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\Wire\src\Wire.cpp">
+    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\Wire\Wire.cpp">
       <SubType>compile</SubType>
       <Link>ArduinoLibs\Wire\Wire.cpp</Link>
     </Compile>
-    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\Wire\src\Wire.h">
+    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\Wire\Wire.h">
       <SubType>compile</SubType>
       <Link>ArduinoLibs\Wire\Wire.h</Link>
     </Compile>
-    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src\SoftwareSerial.cpp">
+    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\SoftwareSerial.cpp">
       <SubType>compile</SubType>
       <Link>ArduinoLibs\SoftwareSerial\SoftwareSerial.cpp</Link>
     </Compile>
-    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src\SoftwareSerial.h">
+    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\SoftwareSerial.h">
       <SubType>compile</SubType>
       <Link>ArduinoLibs\SoftwareSerial\SoftwareSerial.h</Link>
     </Compile>
-    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\SPI\src\SPI.cpp">
+    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\SPI\SPI.cpp">
       <SubType>compile</SubType>
       <Link>ArduinoLibs\SPI\SPI.cpp</Link>
     </Compile>
-    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\SPI\src\SPI.h">
+    <Compile Include="..\..\..\Program Files %28x86%29\Arduino\hardware\arduino\avr\libraries\SPI\SPI.h">
       <SubType>compile</SubType>
       <Link>ArduinoLibs\SPI\SPI.h</Link>
     </Compile>
