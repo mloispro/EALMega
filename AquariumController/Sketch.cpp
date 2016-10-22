@@ -1,4 +1,5 @@
 ﻿//alert: remember to use str.c_str() when returning Strings from functions
+//todo: watchdog
 #include <Arduino.h>
 #include <StandardCplusplus.h>
 #include <vector>
@@ -40,6 +41,10 @@ int _roPumpFloatSwitchPin = A9;//MegaPins::A_9;
 int _roPumpPin = 29;
 int _highWaterFloatSwitchPin = A10;//MegaPins::A_10;
 int _ghDoserPin = 40;
+int _microsDoserPin = 41;
+
+//**Change if using a regular low level relay.
+bool _isHighLevelRelay = true;
 
 #pragma region DOSER
 
@@ -68,11 +73,12 @@ AnalogSwitch _highWaterFloatSwitch(_highWaterFloatSwitchPin, 900);
 
 #pragma endregion PUMP
 
-#pragma region LIQUIDDOSER
+#pragma region LIQUIDDOSERS
 
-LiquidDoser _ghDoser(_ghDoserPin, 5);
+LiquidDoser _ghDoser;
+LiquidDoser _microsDoser;
 
-#pragma endregion LIQUIDDOSER
+#pragma endregion LIQUIDDOSERS
 
 #pragma region INIT
 
@@ -90,6 +96,7 @@ void RunDoser();
 void AccTick();
 void RunTankPump();
 void RunROPump();
+void RunMicrosDoser();
 
 #pragma endregion INIT
 
@@ -102,7 +109,7 @@ void RunROPump();
 // the setup function runs once when you press reset or power the board
 void setup() {
 
-    Serial.begin(115200);
+    Serial.begin(57600);
     while(!Serial);
 
     //todo: comment this out
@@ -145,16 +152,14 @@ void setup() {
     //_feeders.push_back(feeder4);
 
     _tankPump = Pump(_tankPumpPin, 2, _tankPumpPin, 604800, _tankPumpEnabled); //weekly
-    _tankPump.SetRelayHigh();
-    _roPump = ROPump(_roPumpPin, _roPumpFloatSwitchPin, _highWaterFloatSwitchPin, true);
-    _roPump.SetRelayHigh();
-
-    //_ghDoser = LiquidDoser(_ghDoserPin, 5);
-    _ghDoser.Run(); //todo: move this after tds is hooked up.
-    _ghDoser.SetRunDurration(8);
-    _ghDoser.Run();
-    //Motors.push_back(_doser);
-    //vector<ServoMotor> motors = Motors;
+    _roPump = ROPump(_roPumpPin, _roPumpFloatSwitch, _highWaterFloatSwitch, true);
+    _ghDoser = LiquidDoser(_ghDoserPin, AccessoryType::GHDoser);
+    _microsDoser = LiquidDoser(_microsDoserPin, AccessoryType::MicrosDoser);
+    if(_isHighLevelRelay) {
+        _tankPump.SetRelayHigh(); //doing this because using a high level relay in aquarium controler
+        _roPump.SetRelayHigh();
+        _microsDoser.SetRelayHigh();
+    }
 
     _accTimer.setInterval(4000, AccTick);
     _selectPressTimer.setInterval(500, IsSelectPressed);
@@ -198,6 +203,9 @@ void AccTick() {
     }
     if(RTCExt::IsAccEnabled(AccessoryType::WaterPump)) {
         RunTankPump();
+    }
+    if(RTCExt::IsAccEnabled(AccessoryType::MicrosDoser)) {
+        RunMicrosDoser();
     }
     RunROPump();
 }
@@ -249,7 +257,14 @@ void RunROPump() {
     }
 
 }
+void RunMicrosDoser() {
+    SerialExt::Debug(F("Micros Doser"));
+    bool runMotor = _microsDoser.ShouldRunMotor(true);
 
+    if(runMotor) {
+        _microsDoser.Run();
+    }
+}
 
 
 
