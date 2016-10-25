@@ -153,7 +153,7 @@ void setup() {
 
     _tankPump = Pump(_tankPumpPin, 2, _tankPumpPin, 604800, _tankPumpEnabled); //weekly
     _roPump = ROPump(_roPumpPin, _roPumpFloatSwitch, _highWaterFloatSwitch, true);
-    _ghDoser = LiquidDoser(_ghDoserPin, AccessoryType::GHDoser);
+    _ghDoser = LiquidDoser(_ghDoserPin, AccessoryType::MacrosDoser);
     _microsDoser = LiquidDoser(_microsDoserPin, AccessoryType::MicrosDoser);
     if(_isHighLevelRelay) {
         _tankPump.SetRelayHigh(); //doing this because using a high level relay in aquarium controler

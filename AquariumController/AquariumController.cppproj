@@ -415,6 +415,14 @@
       <SubType>compile</SubType>
       <Link>EALLib\AnalogSwitch.h</Link>
     </Compile>
+    <Compile Include="..\..\EALLib\AquaControllerWire.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\AquaControllerWire.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\AquaControllerWire.h">
+      <SubType>compile</SubType>
+      <Link>EALLib\AquaControllerWire.h</Link>
+    </Compile>
     <Compile Include="..\..\EALLib\Containers.cpp">
       <SubType>compile</SubType>
       <Link>EALLib\Containers.cpp</Link>
