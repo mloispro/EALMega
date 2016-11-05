@@ -15,11 +15,13 @@ void setup() {
     Serial.begin(57600);
     while(!Serial);
 
+    //led
     pinMode(13, OUTPUT);
 
-    //relay
-    pinMode(_relayPin, OUTPUT);
+    //relay, always put digitalwrite before pinmode to prevent relay engage on startup
     digitalWrite(_relayPin, LOW);
+    pinMode(_relayPin, OUTPUT);
+
 }
 
 // the loop function runs over and over again forever
