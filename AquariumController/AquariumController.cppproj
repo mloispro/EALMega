@@ -499,14 +499,6 @@
       <SubType>compile</SubType>
       <Link>EALLib\Pump.h</Link>
     </Compile>
-    <Compile Include="..\..\EALLib\RODoser.cpp">
-      <SubType>compile</SubType>
-      <Link>EALLib\RODoser.cpp</Link>
-    </Compile>
-    <Compile Include="..\..\EALLib\RODoser.h">
-      <SubType>compile</SubType>
-      <Link>EALLib\RODoser.h</Link>
-    </Compile>
     <Compile Include="..\..\EALLib\ROPump.cpp">
       <SubType>compile</SubType>
       <Link>EALLib\ROPump.cpp</Link>

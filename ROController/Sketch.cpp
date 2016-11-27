@@ -19,7 +19,7 @@ void setup(void) {
 
     Sketch::Setup();
 
-    int interval = 1000;
+    int interval = 500;
 #if DEBUG
     interval = 1;
 #endif

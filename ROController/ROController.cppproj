@@ -189,7 +189,7 @@
       </AvrGccCpp>
     </ToolchainSettings>
     <PostBuildEvent>if $(Configuration) == Release (
-  call "$(SolutionDir)Deploy\ArduinoDeploy.cmd" $(OutputDirectory)/$(OutputFileName) $(avrdevice) COM7
+  call "$(SolutionDir)Deploy\ArduinoDeploy.cmd" $(OutputDirectory)/$(OutputFileName) $(avrdevice) COM9
 )</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -403,6 +403,22 @@
       <SubType>compile</SubType>
       <Link>ArduinoLibs\SimpleTimer\SimpleTimer.h</Link>
     </Compile>
+    <Compile Include="..\..\EALLib\AnalogSwitch.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\AnalogSwitch.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\AnalogSwitch.h">
+      <SubType>compile</SubType>
+      <Link>EALLib\AnalogSwitch.h</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\AsyncDelay.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\AsyncDelay.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\AsyncDelay.h">
+      <SubType>compile</SubType>
+      <Link>EALLib\AsyncDelay.h</Link>
+    </Compile>
     <Compile Include="..\..\EALLib\LCDBase.cpp">
       <SubType>compile</SubType>
       <Link>EALLib\LCDBase.cpp</Link>
@@ -427,6 +443,22 @@
       <SubType>compile</SubType>
       <Link>EALLib\MemoryExt.h</Link>
     </Compile>
+    <Compile Include="..\..\EALLib\RODoser.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\RODoser.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\RODoser.h">
+      <SubType>compile</SubType>
+      <Link>EALLib\RODoser.h</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\ROSensorsMem.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\ROSensorsMem.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\ROSensorsMem.h">
+      <SubType>compile</SubType>
+      <Link>EALLib\ROSensorsMem.h</Link>
+    </Compile>
     <Compile Include="..\..\EALLib\ROTankWire.cpp">
       <SubType>compile</SubType>
       <Link>EALLib\ROTankWire.cpp</Link>
@@ -434,14 +466,6 @@
     <Compile Include="..\..\EALLib\ROTankWire.h">
       <SubType>compile</SubType>
       <Link>EALLib\ROTankWire.h</Link>
-    </Compile>
-    <Compile Include="..\..\EALLib\SensorsMem.cpp">
-      <SubType>compile</SubType>
-      <Link>EALLib\SensorsMem.cpp</Link>
-    </Compile>
-    <Compile Include="..\..\EALLib\SensorsMem.h">
-      <SubType>compile</SubType>
-      <Link>EALLib\SensorsMem.h</Link>
     </Compile>
     <Compile Include="..\..\EALLib\TDSSensorDIY.cpp">
       <SubType>compile</SubType>

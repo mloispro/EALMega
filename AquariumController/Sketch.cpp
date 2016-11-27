@@ -1,5 +1,5 @@
 ﻿//alert: remember to use str.c_str() when returning Strings from functions
-//todo: watchdog
+
 #include <Arduino.h>
 #include <StandardCplusplus.h>
 #include <vector>
@@ -15,7 +15,6 @@ using namespace std;
 #include "SerialExt.h"
 #include "RTCExt.h"
 #include "AnalogSwitch.h"
-#include "RODoser.h"
 #include "FishFeeder.h"
 #include "ServoMotor.h"
 #include "Pump.h"
@@ -33,9 +32,6 @@ using namespace LCD;
 //int _feederPin2 = 31;
 //int _feederPin3 = 32;
 //int _feederPin4 = 33;
-int _doserPin = 53;
-int _doserRelayPin = 26;
-int _doserFloatSwitchPin = A8;//MegaPins::A_8;
 int _tankPumpPin = 28;
 int _roPumpFloatSwitchPin = A9;//MegaPins::A_9;
 int _roPumpPin = 29;
@@ -46,14 +42,6 @@ int _microsDoserPin = 41;
 //**Change if using a regular low level relay.
 bool _isHighLevelRelay = true;
 
-#pragma region DOSER
-
-bool _doserEnabled = false;
-AnalogSwitch _doserFloatSwitch(_doserFloatSwitchPin);
-Servo _doserServo;
-RODoser _doser;
-
-#pragma endregion DOSER
 
 #pragma region FEEDER
 
@@ -140,8 +128,6 @@ void setup() {
 
     _lcdDisplay.Init(); //needs to run first to init rtc.
 
-    _doser = RODoser(_doserServo, _doserPin, 2, 22000, _doserFloatSwitch, _doserEnabled);
-
     //FishFeeder feeder1 = FishFeeder::CreateFeeder(_feederPin1, 2, _feederRunEvery, _feederEnabled);
     //_feeders.push_back(feeder1);
     //FishFeeder feeder2 = FishFeeder::CreateFeeder(_feederPin2, 2, _feederRunEvery, _feederEnabled);
@@ -227,14 +213,14 @@ void FeedFish() {
 
 void RunDoser() {
 
-    bool runMotor = _doser.ShouldRunMotor(true);
-
-    if(runMotor) {
-
-        //SerialExt::Debug("switchIsOn: ", _doser.TheSwitch.IsOn());
-        //SerialExt::Debug("switchVal: ", _doser.TheSwitch.SwitchReading);
-        _doser.Run();
-    }
+    //bool runMotor = _doser.ShouldRunMotor(true);
+    //
+    //if(runMotor) {
+    //
+    ////SerialExt::Debug("switchIsOn: ", _doser.TheSwitch.IsOn());
+    ////SerialExt::Debug("switchVal: ", _doser.TheSwitch.SwitchReading);
+    //_doser.Run();
+    //}
 
 }
 
