@@ -3,9 +3,10 @@
 
 #include <Arduino.h> 
 
+//todo: **change these
 //esp-01 is 0,2
-int _sdaPin = 0;//0//4
-int _sclPin = 2;//2//5
+int _sdaPin = 4;//0//4
+int _sclPin = 5;//2//5
 
 const byte _slave = 8; //has to be greater than 7
 uint8_t _wireReqLength = 20;
@@ -34,7 +35,7 @@ void Transmit(String request) {
 String Request(){
   String wireResponse;
   Wire.requestFrom(_slave,_wireRespLength); //32 bytes is max, so call multiple
-  delay(20); //may need to lower this to 10 if having timeouts
+  delay(20); //may need to lower this to 10 if having timeouts, 20 seems to work..
   while (Wire.available() > 0) {
       char p = (char)Wire.read();
       //delay(10);
@@ -77,6 +78,28 @@ String EnsureWireConnected(){
   
 }
 
+long _lastWireSuccess = millis();
+long _wireTimeout = 120000; //check every 2 minute. 120000
+void EnsureComm(){
+  //restart if no response from wire
+  if(millis() - _lastWireSuccess > _wireTimeout*2) {
+    PrintDebug("wire time out, reseting..");
+    //ESP.restart();
+    system_restart();
+    delay(2000);
+    _lastWireSuccess = millis();
+    PrintDebug("reseting..");
+  }
+
+
+  //ensure wire connected every 2 min
+  static unsigned long samplingTime = millis();
+  if(millis() - samplingTime > _wireTimeout) { //check every 2 minute. 120000
+      EnsureWireConnected();
+      samplingTime = millis();
+      _lastWireSuccess = millis();
+  }
+}
 String ScanI2C(){
   String response="";
   byte error, address;

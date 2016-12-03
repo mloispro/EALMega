@@ -189,7 +189,7 @@
       </AvrGccCpp>
     </ToolchainSettings>
     <PostBuildEvent>if $(Configuration) == Release (
-  call "$(SolutionDir)Deploy\ArduinoDeploy.cmd" $(OutputDirectory)/$(OutputFileName) $(avrdevice) COM7
+  call "$(SolutionDir)Deploy\ArduinoDeploy.cmd" $(OutputDirectory)/$(OutputFileName) $(avrdevice) COM10
 )</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -403,6 +403,14 @@
       <SubType>compile</SubType>
       <Link>ArduinoLibs\SimpleTimer\SimpleTimer.h</Link>
     </Compile>
+    <Compile Include="..\..\EALLib\AsyncDelay.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\AsyncDelay.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\AsyncDelay.h">
+      <SubType>compile</SubType>
+      <Link>EALLib\AsyncDelay.h</Link>
+    </Compile>
     <Compile Include="..\..\EALLib\CmdMessengerExt.h">
       <SubType>compile</SubType>
       <Link>EALLib\CmdMessengerExt.h</Link>
@@ -439,6 +447,14 @@
       <SubType>compile</SubType>
       <Link>EALLib\PHSensor.h</Link>
     </Compile>
+    <Compile Include="..\..\EALLib\RODoser.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\RODoser.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\RODoser.h">
+      <SubType>compile</SubType>
+      <Link>EALLib\RODoser.h</Link>
+    </Compile>
     <Compile Include="..\..\EALLib\SensorsMem.cpp">
       <SubType>compile</SubType>
       <Link>EALLib\SensorsMem.cpp</Link>
@@ -454,6 +470,14 @@
     <Compile Include="..\..\EALLib\TDSSensor.h">
       <SubType>compile</SubType>
       <Link>EALLib\TDSSensor.h</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\TDSSensorDIY.cpp">
+      <SubType>compile</SubType>
+      <Link>EALLib\TDSSensorDIY.cpp</Link>
+    </Compile>
+    <Compile Include="..\..\EALLib\TDSSensorDIY.h">
+      <SubType>compile</SubType>
+      <Link>EALLib\TDSSensorDIY.h</Link>
     </Compile>
     <Compile Include="..\..\EALLib\WaterSensorWire.cpp">
       <SubType>compile</SubType>

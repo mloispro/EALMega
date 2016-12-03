@@ -12,17 +12,22 @@
 #include "WireComm.h"
 #include "SendSensorVals.h"
 
+extern "C" {
+#include "user_interface.h"
+}
+
 //SoftwareSerial unoSerial(3, 1); // RX, TX 13, 15
 
-int _ip[4]{192, 168, 10, 162};
-const char *hostName = "ROController-1";
+//**change these 2
+int _ip[4]{192, 168, 10, 160}; 
+const char *hostName = "WaterSensor-2";//"ROController-1";
 
 const char *ssid = "One Love";//"One Love";//"SMU_Aruba_WiFi";
 const char *password = "teddy1207";//teddy1207";
-//const char *_sensorIp = "192.168.10.106";//"192.168.10.160"
 
-//int _sdaPin = 4;
-//int _sclPin = 5;
+//esp-01 is 0,2
+//int _sdaPin = 0;//0//4
+//int _sclPin = 2;//2//5
 
 // TCP server at port 80 will respond to HTTP requests
 WiFiServer server(80);
@@ -215,28 +220,10 @@ void setup(void)
    delay(100);
 }
 
-long _lastWireSuccess = millis();
-long _wireTimeout = 120000; //check every 2 minute. 120000
+
 void loop(void)
 {
-  //restart if no response from wire
-  if(millis() - _lastWireSuccess > _wireTimeout*2) {
-    PrintDebug("wire time out, reseting..");
-    //ESP.restart();
-    system_restart();
-    delay(2000);
-    _lastWireSuccess = millis();
-    PrintDebug("reseting..");
-  }
-
-
-  //ensure wire connected every 2 min
-  static unsigned long samplingTime = millis();
-  if(millis() - samplingTime > _wireTimeout) { //check every 2 minute. 120000
-      EnsureWireConnected();
-      samplingTime = millis();
-      _lastWireSuccess = millis();
-  }
+  EnsureComm();
 
  //CheckSensors();
   

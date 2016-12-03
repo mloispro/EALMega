@@ -16,8 +16,6 @@ Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "Blink", "Blink\Blink.cpppro
 EndProject
 Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "WaterSensors", "WaterSensors\WaterSensors.cppproj", "{82CB9C35-23E2-4F6B-951E-DDAF55917257}"
 EndProject
-Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "ROController", "ROController\ROController.cppproj", "{FBC3B5D6-499E-4570-84FA-28E87AE7B781}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -38,10 +36,6 @@ Global
 		{82CB9C35-23E2-4F6B-951E-DDAF55917257}.Debug|AVR.Build.0 = Debug|AVR
 		{82CB9C35-23E2-4F6B-951E-DDAF55917257}.Release|AVR.ActiveCfg = Release|AVR
 		{82CB9C35-23E2-4F6B-951E-DDAF55917257}.Release|AVR.Build.0 = Release|AVR
-		{FBC3B5D6-499E-4570-84FA-28E87AE7B781}.Debug|AVR.ActiveCfg = Debug|AVR
-		{FBC3B5D6-499E-4570-84FA-28E87AE7B781}.Debug|AVR.Build.0 = Debug|AVR
-		{FBC3B5D6-499E-4570-84FA-28E87AE7B781}.Release|AVR.ActiveCfg = Release|AVR
-		{FBC3B5D6-499E-4570-84FA-28E87AE7B781}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
