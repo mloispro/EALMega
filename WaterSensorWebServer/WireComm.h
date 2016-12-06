@@ -3,10 +3,8 @@
 
 #include <Arduino.h> 
 
-//todo: **change these
-//esp-01 is 0,2
-int _sdaPin = 4;//0//4
-int _sclPin = 5;//2//5
+int _sdaPin;
+int _sclPin;
 
 const byte _slave = 8; //has to be greater than 7
 uint8_t _wireReqLength = 20;
@@ -49,6 +47,11 @@ String Request(){
   
   PrintDebug("wireResponse",String(wireResponse));
   return wireResponse;
+}
+
+void WireCom_Setup(int sdaPin, int sclPin){
+  _sdaPin = sdaPin;
+  _sclPin = sclPin;
 }
 
 String EnsureWireConnected(){

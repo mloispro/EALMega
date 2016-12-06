@@ -19,15 +19,16 @@ extern "C" {
 //SoftwareSerial unoSerial(3, 1); // RX, TX 13, 15
 
 //**change these 2
-int _ip[4]{192, 168, 10, 160}; 
-const char *hostName = "WaterSensor-2";//"ROController-1";
+int _ip[4]{192, 168, 10, 162}; 
+const char *hostName = "ROController-1";//"WaterSensor-2";//"ROController-1";
 
 const char *ssid = "One Love";//"One Love";//"SMU_Aruba_WiFi";
 const char *password = "teddy1207";//teddy1207";
 
+//todo: **change these
 //esp-01 is 0,2
-//int _sdaPin = 0;//0//4
-//int _sclPin = 2;//2//5
+int SdaPin = 0;//0//4
+int SclPin = 2;//2//5
 
 // TCP server at port 80 will respond to HTTP requests
 WiFiServer server(80);
@@ -48,27 +49,30 @@ String ProcessRequest(String req){
   }
   else if (cmd == "/SetSensorInfo")
   {
-    //..../SetSensorInfo/3.1/2/3.5/50/2
+    //..../SetSensorInfo/3.1/2/3.5/50/2/2200
     String phOffset = SplitString(req,'/',2);
     String tdsOffset = SplitString(req,'/',3);
     String tdsVolts = SplitString(req,'/',4);
     String tdsMin = SplitString(req,'/',5);
     String doseDurr = SplitString(req,'/',6);
-    //String doseNow = SplitString(req,'/',7);
+    String tdsSampleDurr = SplitString(req,'/',7);
+    String doseNow = SplitString(req,'/',8);
    
     PrintDebug("Parsed phOffset: " + phOffset);
     PrintDebug("Parsed tdsOffset: " + tdsOffset);
     PrintDebug("Parsed tdsVolts: " + tdsVolts);
     PrintDebug("Parsed tdsMin: " + tdsMin);
     PrintDebug("Parsed doseDurr: " + doseDurr);
+    PrintDebug("Parsed tdsSampleDurr: " + tdsSampleDurr);
+    PrintDebug("Parsed doseNow: " + doseNow);
     
-    response += SetSensorInfo(cmd, phOffset, tdsOffset, tdsVolts, tdsMin, doseDurr);
+    response += SetSensorInfo(cmd, phOffset, tdsOffset, tdsVolts, tdsMin, doseDurr, tdsSampleDurr, doseNow);
   }
 
   return response;
 }
 
-String SetSensorInfo(String cmd, String phOffset, String tdsOffset, String tdsVolts, String tdsMin, String doseDurr){
+String SetSensorInfo(String cmd, String phOffset, String tdsOffset, String tdsVolts, String tdsMin, String doseDurr, String tdsSampleDurr, String doseNow){
   String response="";
 
   Transmit(cmd);
@@ -95,6 +99,14 @@ String SetSensorInfo(String cmd, String phOffset, String tdsOffset, String tdsVo
   request = "doseDurr="+doseDurr;
   Transmit(request);
   delay(20);
+
+  request = "tdsSampleDurr="+tdsSampleDurr;
+  Transmit(request);
+  delay(20);
+
+  request = "doseNow="+doseNow;
+  Transmit(request);
+  delay(20);
   
   response = "{\r\n";
   response += "\"msg\":\"Sensor Info Updated.\"\r\n";
@@ -115,6 +127,7 @@ struct WireSensorInfo {
   String timeSinceLastDose;
   String tdsMin;
   String doseDurration;
+  String tdsSampleDurr;
 };
 
 WireSensorInfo _wireSensorInfo;
@@ -135,6 +148,7 @@ String GetSensorVals(String req){
   _wireSensorInfo.timeSinceLastDose = Request();
   _wireSensorInfo.tdsMin = Request();
   _wireSensorInfo.doseDurration = Request();
+  _wireSensorInfo.tdsSampleDurr = Request();
   
   delay(20); //let wire clear.
 
@@ -150,7 +164,8 @@ String GetSensorVals(String req){
   response += "\"tdsVolts\":\"" + _wireSensorInfo.tdsVolts+ "\",\r\n";
   response += "\"timeSinceLastDose\":\"" + _wireSensorInfo.timeSinceLastDose+ "\",\r\n";
   response += "\"tdsMin\":\"" + _wireSensorInfo.tdsMin+ "\",\r\n";
-  response += "\"doseDurr\":\"" + _wireSensorInfo.doseDurration+ "\"\r\n";
+  response += "\"doseDurr\":\"" + _wireSensorInfo.doseDurration+ "\",\r\n";
+  response += "\"tdsSampleDurr\":\"" + _wireSensorInfo.tdsSampleDurr+ "\"\r\n";
   response += "}\r\n";
   
   return response;
@@ -210,10 +225,11 @@ void setup(void)
   // Add service to MDNS-SD
   MDNS.addService("http", "tcp", 80);
 
-  Wire.begin(_sdaPin, _sclPin);
+  Wire.begin(SdaPin, SclPin);
   //Wire.pins(_sdaPin, _sclPin);
   //Wire.setClockStretchLimit(1500);
   Wire.setClockStretchLimit(15000);
+  WireCom_Setup(SdaPin, SclPin);
   
   //EnsureWireConnected(); //dont do this here it messes up wire.
 
@@ -266,9 +282,9 @@ void loop(void)
 //    response += "<p>/SetPHOffset/3.1</p>";
 //    response += "<p>/SetTDSOffset/2</p>";
 //    response += "<p>/SetTDSVolts/3.5</p>";
-    response += "<p>/SetSensorInfo/phOffset/tdsOffset/tdsVolts/tdsMin/doseDurr</p>";
-    response += "<p>/SetSensorInfo/3.1/2/3.5/50/2</p>";
-    response += "<p>/SetSensorInfo/-/2/3.5/-/- (\'-\' skips setting val)</p>";
+    response += "<p>/SetSensorInfo/phOffset/tdsOffset/tdsVolts/tdsMin/doseDurr/tdsSampleDurr/doseNow</p>";
+    response += "<p>/SetSensorInfo/3.1/2/3.5/50/2/2200/1</p>";
+    response += "<p>/SetSensorInfo/-/2/3.5/-/-/-/- (\'-\' skips setting val)</p>";
     response += "<p>/scan</p>";
     response += "<p>/checkcom</p>";
     response += "<p>/clearcom</p>";
